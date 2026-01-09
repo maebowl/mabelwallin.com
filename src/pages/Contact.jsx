@@ -17,7 +17,7 @@ export default function Contact() {
               </h3>
               <div className="space-y-4">
                 <a
-                  href="mailto:maybuhls@gmail.com"
+                  href="mailto:mabel@mabelwallin.com"
                   className="flex items-center gap-3 text-gray-300 hover:text-amber-400 transition-colors"
                 >
                   <svg
@@ -33,7 +33,7 @@ export default function Contact() {
                       d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  <span>maybuhls@gmail.com</span>
+                  <span>mabel@mabelwallin.com</span>
                 </a>
 
                 <a
