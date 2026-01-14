@@ -10,6 +10,30 @@ export default function Videos() {
       videoUrl: 'https://youtu.be/Ttutmwz4BtE',
       videoId: 'Ttutmwz4BtE',
     },
+    {
+      id: 2,
+      title: 'Mabel and Bryce go fishing',
+      description: '',
+      thumbnail: 'https://img.youtube.com/vi/hJfbYTFYudE/maxresdefault.jpg',
+      videoUrl: 'https://youtu.be/hJfbYTFYudE',
+      videoId: 'hJfbYTFYudE',
+    },
+    {
+      id: 3,
+      title: "Mabel's Train Adventure",
+      description: '',
+      thumbnail: 'https://img.youtube.com/vi/cJezhteJgT8/maxresdefault.jpg',
+      videoUrl: 'https://youtu.be/cJezhteJgT8',
+      videoId: 'cJezhteJgT8',
+    },
+    {
+      id: 4,
+      title: 'The Abandoned Pub',
+      description: '',
+      thumbnail: 'https://img.youtube.com/vi/_RmdBZYhu4A/maxresdefault.jpg',
+      videoUrl: 'https://youtu.be/_RmdBZYhu4A',
+      videoId: '_RmdBZYhu4A',
+    },
   ]);
 
   const [selectedVideo, setSelectedVideo] = useState(null);
