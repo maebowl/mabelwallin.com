@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Videos from './pages/Videos';
 import Design from './pages/Design';
 import Contact from './pages/Contact';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="designs" element={<Design />} />
           </Route>
           <Route path="contact" element={<Contact />} />
+          <Route path="admin" element={<Admin />} />
         </Route>
       </Routes>
     </BrowserRouter>
