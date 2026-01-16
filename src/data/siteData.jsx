@@ -112,6 +112,12 @@ const defaultData = {
           "artist": "Clairo",
           "url": "/uploads/1768601122861-SpotiDown.App_-_Amoeba_-_Recorded_At_Electric_Lady_Studios_-_Clairo.mp3",
           "id": 2
+      },
+      {
+          "title": "Blue Light",
+          "artist": "Mazzy Star",
+          "url": "/uploads/1768601157059-SpotiDown.App_-_Blue_Light_-_Mazzy_Star.mp3",
+          "id": 3
       }
   ],
 }
