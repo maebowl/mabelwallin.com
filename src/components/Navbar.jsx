@@ -42,6 +42,16 @@ export default function Navbar() {
               Videos
             </Link>
             <Link
+              to="/portfolio/designs"
+              className={`${
+                isActive('/portfolio/designs')
+                  ? 'text-amber-400 border-b-2 border-amber-400'
+                  : 'text-gray-300 hover:text-amber-400'
+              } px-3 py-2 text-sm font-medium transition-colors`}
+            >
+              Designs
+            </Link>
+            <Link
               to="/contact"
               className={`${
                 isActive('/contact')
@@ -95,6 +105,17 @@ export default function Navbar() {
                 } px-3 py-2 text-sm font-medium transition-colors rounded`}
               >
                 Videos
+              </Link>
+              <Link
+                to="/portfolio/designs"
+                onClick={() => setIsOpen(false)}
+                className={`${
+                  isActive('/portfolio/designs')
+                    ? 'text-amber-400 bg-charcoal-300'
+                    : 'text-gray-300 hover:text-amber-400 hover:bg-charcoal-300'
+                } px-3 py-2 text-sm font-medium transition-colors rounded`}
+              >
+                Designs
               </Link>
               <Link
                 to="/contact"
