@@ -218,8 +218,8 @@ export default function CassettePlayer() {
         </div>
 
         <div className="cassette-controls">
-          <button className="control-btn" onClick={prevTrack} title="Previous">
-            <span className="control-icon">⏮</span>
+          <button className="control-btn skip-btn" onClick={prevTrack} title="Previous">
+            <span className="skip-icon prev"></span>
           </button>
           <button
             className="control-btn play-btn"
@@ -227,13 +227,13 @@ export default function CassettePlayer() {
             title={isPlaying ? 'Pause' : 'Play'}
             style={{
               background: `linear-gradient(180deg, ${cassetteColor.primary} 0%, ${cassetteColor.secondary} 100%)`,
-              borderColor: cassetteColor.secondary
+              boxShadow: `0 4px 12px ${cassetteColor.primary}40`
             }}
           >
-            <span className="control-icon">{isPlaying ? '⏸' : '▶'}</span>
+            <span className={`play-icon ${isPlaying ? 'pause' : 'play'}`}></span>
           </button>
-          <button className="control-btn" onClick={nextTrack} title="Next">
-            <span className="control-icon">⏭</span>
+          <button className="control-btn skip-btn" onClick={nextTrack} title="Next">
+            <span className="skip-icon next"></span>
           </button>
         </div>
 
