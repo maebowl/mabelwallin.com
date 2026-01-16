@@ -125,13 +125,19 @@ const defaultData = {
           "id": 1,
           "name": "mabel's mixtape",
           "color": "amber",
-          "songIds": [1, 2, 3]
+          "songIds": [
+              1,
+              2,
+              3
+          ]
       },
       {
           "id": 2,
           "name": "Resurrections",
           "color": "pink",
-          "songIds": []
+          "songIds": [
+              2
+          ]
       }
   ],
 }
