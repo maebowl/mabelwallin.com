@@ -100,7 +100,14 @@ const defaultData = {
           "id": 4
       }
   ],
-  music: [],
+  music: [
+      {
+          "title": "Well Ok Honey",
+          "artist": "Jenny O.",
+          "url": "/uploads/1768600647889-SpotiDown.App_-_Well_OK_Honey_-_Jenny_O..mp3",
+          "id": 1
+      }
+  ],
 }
 
 const SiteDataContext = createContext()
