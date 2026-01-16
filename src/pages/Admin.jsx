@@ -731,7 +731,7 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
                     inputId={`file-badge-edit-${badge.id}`}
                     onUpload={(url) => {
                       setEditing(prev => {
-                        const updated = { ...prev, image: url }
+                        const updated = { ...prev, image: url, updatedAt: Date.now() }
                         updateBadge(badge.id, updated)
                         return null
                       })
