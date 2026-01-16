@@ -18,11 +18,13 @@ function Admin() {
   const [saveStatus, setSaveStatus] = useState('')
 
   const {
-    siteSettings, videos, designs, socials,
+    siteSettings, videos, designs, socials, badges,
     updateSiteSettings,
     addVideo, updateVideo, deleteVideo,
     addDesign, updateDesign, deleteDesign,
-    updateSocial, resetToDefaults
+    updateSocial,
+    addBadge, updateBadge, deleteBadge,
+    resetToDefaults
   } = useSiteData()
 
   useEffect(() => {
@@ -90,44 +92,63 @@ function Admin() {
     const id = Math.max(0, ...videos.map(v => v.id)) + 1
     const newVideos = [...videos, { ...video, id }]
     addVideo(video)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges })
   }
 
   const handleUpdateVideo = async (id, updates) => {
     const newVideos = videos.map(v => v.id === id ? { ...v, ...updates } : v)
     updateVideo(id, updates)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges })
   }
 
   const handleDeleteVideo = async (id) => {
     const newVideos = videos.filter(v => v.id !== id)
     deleteVideo(id)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges })
   }
 
   const handleAddDesign = async (design) => {
     const id = Math.max(0, ...designs.map(d => d.id)) + 1
     const newDesigns = [...designs, { ...design, id }]
     addDesign(design)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges })
   }
 
   const handleUpdateDesign = async (id, updates) => {
     const newDesigns = designs.map(d => d.id === id ? { ...d, ...updates } : d)
     updateDesign(id, updates)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges })
   }
 
   const handleDeleteDesign = async (id) => {
     const newDesigns = designs.filter(d => d.id !== id)
     deleteDesign(id)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges })
   }
 
   const handleUpdateSocial = async (id, updates) => {
     const newSocials = socials.map(s => s.id === id ? { ...s, ...updates } : s)
     updateSocial(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials: newSocials })
+    await autoSave({ siteSettings, videos, designs, socials: newSocials, badges })
+  }
+
+  const handleAddBadge = async (badge) => {
+    const id = Math.max(0, ...badges.map(b => b.id)) + 1
+    const newBadges = [...badges, { ...badge, id }]
+    addBadge(badge)
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+  }
+
+  const handleUpdateBadge = async (id, updates) => {
+    const newBadges = badges.map(b => b.id === id ? { ...b, ...updates } : b)
+    updateBadge(id, updates)
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+  }
+
+  const handleDeleteBadge = async (id) => {
+    const newBadges = badges.filter(b => b.id !== id)
+    deleteBadge(id)
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
   }
 
   const handleUpdateSiteSettings = async (section, updates) => {
@@ -136,7 +157,7 @@ function Admin() {
       [section]: { ...siteSettings[section], ...updates }
     }
     updateSiteSettings(section, updates)
-    await autoSave({ siteSettings: newSettings, videos, designs, socials })
+    await autoSave({ siteSettings: newSettings, videos, designs, socials, badges })
   }
 
   if (!isAuthenticated) {
@@ -213,6 +234,12 @@ function Admin() {
             Contact
           </button>
           <button
+            className={`tab ${activeTab === 'badges' ? 'active' : ''}`}
+            onClick={() => setActiveTab('badges')}
+          >
+            Badges
+          </button>
+          <button
             className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
@@ -244,6 +271,16 @@ function Admin() {
             <SocialsManager
               socials={socials}
               updateSocial={handleUpdateSocial}
+              saving={saving}
+            />
+          )}
+          {activeTab === 'badges' && (
+            <BadgesManager
+              badges={badges}
+              addBadge={handleAddBadge}
+              updateBadge={handleUpdateBadge}
+              deleteBadge={handleDeleteBadge}
+              githubToken={githubToken}
               saving={saving}
             />
           )}
@@ -588,6 +625,117 @@ function SocialsManager({ socials, updateSocial, saving }) {
                 </div>
                 <div className="item-actions">
                   <button onClick={() => setEditing({ ...social })}>Edit</button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, githubToken, saving }) {
+  const [editing, setEditing] = useState(null)
+  const [newBadge, setNewBadge] = useState({ image: '', url: '', alt: '' })
+
+  const handleAdd = () => {
+    if (!newBadge.image) return
+    addBadge(newBadge)
+    setNewBadge({ image: '', url: '', alt: '' })
+  }
+
+  const handleUpdate = (id) => {
+    updateBadge(id, editing)
+    setEditing(null)
+  }
+
+  return (
+    <div className="manager">
+      <h2>Badges</h2>
+      <p className="manager-note">88x31 badges displayed on the contact page. Upload or paste image URLs.</p>
+
+      <div className="add-form">
+        <h3>Add New Badge</h3>
+        <div className="media-input-group">
+          <input
+            placeholder="Image URL"
+            value={newBadge.image}
+            onChange={(e) => setNewBadge({ ...newBadge, image: e.target.value })}
+          />
+          <FileUpload
+            accept="image/*"
+            label="Upload"
+            githubToken={githubToken}
+            onUpload={(url) => setNewBadge({ ...newBadge, image: url })}
+          />
+        </div>
+        <input
+          placeholder="Link URL (where it goes when clicked)"
+          value={newBadge.url}
+          onChange={(e) => setNewBadge({ ...newBadge, url: e.target.value })}
+        />
+        <input
+          placeholder="Alt text (optional)"
+          value={newBadge.alt}
+          onChange={(e) => setNewBadge({ ...newBadge, alt: e.target.value })}
+        />
+        <button onClick={handleAdd} disabled={saving}>
+          {saving ? 'Saving...' : 'Add Badge'}
+        </button>
+      </div>
+
+      <div className="items-list">
+        {badges.map((badge) => (
+          <div key={badge.id} className="item">
+            {editing?.id === badge.id ? (
+              <>
+                <div className="media-input-group">
+                  <input
+                    value={editing.image}
+                    onChange={(e) => setEditing({ ...editing, image: e.target.value })}
+                    placeholder="Image URL"
+                  />
+                  <FileUpload
+                    accept="image/*"
+                    label="Upload"
+                    githubToken={githubToken}
+                    onUpload={(url) => setEditing({ ...editing, image: url })}
+                  />
+                </div>
+                <input
+                  value={editing.url || ''}
+                  onChange={(e) => setEditing({ ...editing, url: e.target.value })}
+                  placeholder="Link URL"
+                />
+                <input
+                  value={editing.alt || ''}
+                  onChange={(e) => setEditing({ ...editing, alt: e.target.value })}
+                  placeholder="Alt text"
+                />
+                <div className="item-actions">
+                  <button onClick={() => handleUpdate(badge.id)} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </button>
+                  <button onClick={() => setEditing(null)}>Cancel</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="item-info">
+                  <img
+                    src={badge.image}
+                    alt={badge.alt || 'badge'}
+                    style={{ width: '88px', height: '31px', imageRendering: 'pixelated' }}
+                  />
+                  <span className="item-meta">{badge.alt || 'No alt text'}</span>
+                  <span className="item-meta item-url">{badge.url || 'No link'}</span>
+                </div>
+                <div className="item-actions">
+                  <button onClick={() => setEditing({ ...badge })}>Edit</button>
+                  <button onClick={() => deleteBadge(badge.id)} className="btn-danger" disabled={saving}>
+                    Delete
+                  </button>
                 </div>
               </>
             )}

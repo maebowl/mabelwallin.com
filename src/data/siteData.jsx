@@ -73,12 +73,36 @@ const defaultData = {
           "url": "https://tiktok.com/@maebowl"
       }
   ],
+  badges: [
+      {
+          "id": 1,
+          "image": "/mabelwallin-com88x31.png",
+          "url": "https://mabelwallin.com",
+          "alt": "mabelwallin.com"
+      }
+  ],
 }
 
 const SiteDataContext = createContext()
 
 export function SiteDataProvider({ children }) {
   const [data, setData] = useState(defaultData)
+
+  const addBadge = (badge) => {
+    const id = Math.max(0, ...data.badges.map(b => b.id)) + 1
+    setData(prev => ({ ...prev, badges: [...prev.badges, { ...badge, id }] }))
+  }
+
+  const updateBadge = (id, updates) => {
+    setData(prev => ({
+      ...prev,
+      badges: prev.badges.map(b => b.id === id ? { ...b, ...updates } : b)
+    }))
+  }
+
+  const deleteBadge = (id) => {
+    setData(prev => ({ ...prev, badges: prev.badges.filter(b => b.id !== id) }))
+  }
 
   const addVideo = (video) => {
     const id = Math.max(0, ...data.videos.map(v => v.id)) + 1
@@ -143,6 +167,9 @@ export function SiteDataProvider({ children }) {
       updateDesign,
       deleteDesign,
       updateSocial,
+      addBadge,
+      updateBadge,
+      deleteBadge,
       updateSiteSettings,
       resetToDefaults,
     }}>

@@ -15,7 +15,8 @@
       "Bash(gh repo create:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(git clone:*)"
+      "Bash(git clone:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
