@@ -85,6 +85,12 @@ const defaultData = {
           "url": "https://www.diyhrt.wiki",
           "alt": "just in case",
           "id": 2
+      },
+      {
+          "image": "/uploads/1768557812569-IMG_1919.gif",
+          "url": "https://www.youtube.com/c/scottthewoz",
+          "alt": "hey all",
+          "id": 3
       }
   ],
 }
