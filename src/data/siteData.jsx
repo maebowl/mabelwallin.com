@@ -52,15 +52,7 @@ const defaultData = {
           "isVertical": true
       }
   ],
-  designs: [
-      {
-          "id": 6,
-          "title": "Design Project 6",
-          "category": "Digital Art",
-          "description": "Description of your sixth design project",
-          "image": "https://via.placeholder.com/800x600/3b0764/ffffff?text=Design+6"
-      }
-  ],
+  designs: [],
   socials: [
       {
           "id": "email",
