@@ -97,7 +97,7 @@ export default function Contact() {
                       className="hover:opacity-80 transition-opacity"
                     >
                       <img
-                        src={badge.updatedAt ? `${badge.image}?v=${badge.updatedAt}` : badge.image}
+                        src={`${badge.image}${badge.image.includes('?') ? '&' : '?'}v=${badge.updatedAt || badge.id}`}
                         alt={badge.alt || 'badge'}
                         width="88"
                         height="31"

@@ -78,7 +78,8 @@ const defaultData = {
           "id": 1,
           "image": "/uploads/1768591611555-mabelwallin-com88x31.gif",
           "url": "https://mabelwallin.com",
-          "alt": "mabelwallin.com"
+          "alt": "mabelwallin.com",
+          "updatedAt": 1768591611555
       },
       {
           "image": "/uploads/1768557537415-IMG_1921.png",
