@@ -91,6 +91,12 @@ const defaultData = {
           "url": "https://www.youtube.com/c/scottthewoz",
           "alt": "hey all",
           "id": 3
+      },
+      {
+          "image": "/uploads/1768557940637-IMG_1929.gif",
+          "url": "archlinux.org",
+          "alt": "i use nix btw",
+          "id": 4
       }
   ],
 }
