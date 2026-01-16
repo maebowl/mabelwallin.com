@@ -591,13 +591,31 @@
 
   .admin-tabs {
     width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+    padding-bottom: 0.5rem;
+  }
+
+  .admin-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .tab {
-    flex: 1;
+    flex: 0 0 auto;
     text-align: center;
-    padding: 0.625rem 0.75rem;
+    padding: 0.625rem 0.875rem;
     font-size: 0.8125rem;
+  }
+
+  .settings-field-row {
+    flex-direction: column;
+  }
+
+  .btn-save-field {
+    width: 100%;
   }
 
   .media-input-group {
