@@ -161,6 +161,10 @@ export function SiteDataProvider({ children }) {
     setData(prev => ({ ...prev, badges: prev.badges.filter(b => b.id !== id) }))
   }
 
+  const reorderBadges = (newBadges) => {
+    setData(prev => ({ ...prev, badges: newBadges }))
+  }
+
   const updateSiteSettings = (section, updates) => {
     setData(prev => ({
       ...prev,
@@ -188,6 +192,7 @@ export function SiteDataProvider({ children }) {
       addBadge,
       updateBadge,
       deleteBadge,
+      reorderBadges,
       updateSiteSettings,
       resetToDefaults,
     }}>

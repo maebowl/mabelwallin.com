@@ -23,7 +23,7 @@ function Admin() {
     addVideo, updateVideo, deleteVideo,
     addDesign, updateDesign, deleteDesign,
     updateSocial,
-    addBadge, updateBadge, deleteBadge,
+    addBadge, updateBadge, deleteBadge, reorderBadges,
     resetToDefaults
   } = useSiteData()
 
@@ -148,6 +148,11 @@ function Admin() {
   const handleDeleteBadge = async (id) => {
     const newBadges = badges.filter(b => b.id !== id)
     deleteBadge(id)
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+  }
+
+  const handleReorderBadges = async (newBadges) => {
+    reorderBadges(newBadges)
     await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
   }
 
@@ -280,6 +285,7 @@ function Admin() {
               addBadge={handleAddBadge}
               updateBadge={handleUpdateBadge}
               deleteBadge={handleDeleteBadge}
+              reorderBadges={handleReorderBadges}
               githubToken={githubToken}
               saving={saving}
             />
@@ -635,7 +641,7 @@ function SocialsManager({ socials, updateSocial, saving }) {
   )
 }
 
-function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, githubToken, saving }) {
+function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadges, githubToken, saving }) {
   const [editing, setEditing] = useState(null)
   const [newBadge, setNewBadge] = useState({ image: '', url: '', alt: '' })
 
@@ -650,10 +656,19 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, githubToken
     setEditing(null)
   }
 
+  const moveBadge = (index, direction) => {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= badges.length) return
+    const newBadges = [...badges]
+    const [moved] = newBadges.splice(index, 1)
+    newBadges.splice(newIndex, 0, moved)
+    reorderBadges(newBadges)
+  }
+
   return (
     <div className="manager">
       <h2>Badges</h2>
-      <p className="manager-note">88x31 badges displayed on the contact page. Upload or paste image URLs.</p>
+      <p className="manager-note">88x31 badges displayed on the contact page. Use arrows to reorder.</p>
 
       <div className="add-form">
         <h3>Add New Badge</h3>
@@ -686,7 +701,7 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, githubToken
       </div>
 
       <div className="items-list">
-        {badges.map((badge) => (
+        {badges.map((badge, index) => (
           <div key={badge.id} className="item">
             {editing?.id === badge.id ? (
               <>
@@ -732,6 +747,20 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, githubToken
                   <span className="item-meta item-url">{badge.url || 'No link'}</span>
                 </div>
                 <div className="item-actions">
+                  <button
+                    onClick={() => moveBadge(index, -1)}
+                    disabled={saving || index === 0}
+                    title="Move up"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    onClick={() => moveBadge(index, 1)}
+                    disabled={saving || index === badges.length - 1}
+                    title="Move down"
+                  >
+                    ↓
+                  </button>
                   <button onClick={() => setEditing({ ...badge })}>Edit</button>
                   <button onClick={() => deleteBadge(badge.id)} className="btn-danger" disabled={saving}>
                     Delete
