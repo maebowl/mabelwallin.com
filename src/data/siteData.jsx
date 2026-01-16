@@ -144,6 +144,12 @@ const defaultData = {
           "songIds": [
               4
           ]
+      },
+      {
+          "name": "boot dust",
+          "color": "purple",
+          "id": 3,
+          "songIds": []
       }
   ],
 }
