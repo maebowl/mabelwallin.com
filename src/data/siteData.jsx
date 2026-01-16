@@ -76,7 +76,7 @@ const defaultData = {
   badges: [
       {
           "id": 1,
-          "image": "/mabelwallin-com88x31.png",
+          "image": "/uploads/1768591611555-mabelwallin-com88x31.gif",
           "url": "https://mabelwallin.com",
           "alt": "mabelwallin.com"
       },
