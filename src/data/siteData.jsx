@@ -5,7 +5,7 @@ const defaultData = {
       "hero": {
           "greeting": "hi, i'm",
           "name": "mabel",
-          "subtitle": "16. messing around and making videos"
+          "subtitle": "16. messing around and making videos."
       },
       "videos": {
           "title": "videos",
