@@ -124,12 +124,6 @@ const defaultData = {
           "artist": "Lena Raine",
           "url": "/uploads/1768606431631-SpotiDown.App_-_Resurrections_-_Lena_Raine.mp3",
           "id": 4
-      },
-      {
-          "title": "Tomorrow",
-          "artist": "Shakey Graves",
-          "url": "/uploads/1768607974254-SpotiDown.App_-_Tomorrow_-_Shakey_Graves.mp3",
-          "id": 5
       }
   ],
   cassettes: [
@@ -155,7 +149,9 @@ const defaultData = {
           "name": "boot dust",
           "color": "purple",
           "id": 3,
-          "songIds": []
+          "songIds": [
+              5
+          ]
       }
   ],
 }
