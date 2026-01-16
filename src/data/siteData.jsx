@@ -118,12 +118,18 @@ const defaultData = {
           "title": "Blue Light",
           "artist": "Mazzy Star",
           "url": "/uploads/1768601157059-SpotiDown.App_-_Blue_Light_-_Mazzy_Star.mp3"
+      },
+      {
+          "title": "Resurrections",
+          "artist": "Lena Raine",
+          "url": "/uploads/1768606431631-SpotiDown.App_-_Resurrections_-_Lena_Raine.mp3",
+          "id": 4
       }
   ],
   cassettes: [
       {
           "id": 1,
-          "name": "mabel's mixtape",
+          "name": "chill mixtape",
           "color": "amber",
           "songIds": [
               1,
