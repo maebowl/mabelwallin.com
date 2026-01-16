@@ -474,8 +474,9 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
     setNewDesign({ title: '', category: '', description: '', image: '' })
   }
 
-  const handleUpdate = (id) => {
-    updateDesign(id, editing)
+  const handleUpdate = (id, overrides = {}) => {
+    const updates = { ...editing, ...overrides }
+    updateDesign(id, updates)
     setEditing(null)
   }
 
@@ -544,7 +545,10 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
                     accept="image/*"
                     label="Upload"
                     githubToken={githubToken}
-                    onUpload={(url) => setEditing({ ...editing, image: url })}
+                    onUpload={(url) => {
+                      setEditing({ ...editing, image: url })
+                      handleUpdate(design.id, { image: url })
+                    }}
                   />
                 </div>
                 <input
@@ -651,8 +655,9 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
     setNewBadge({ image: '', url: '', alt: '' })
   }
 
-  const handleUpdate = (id) => {
-    updateBadge(id, editing)
+  const handleUpdate = (id, overrides = {}) => {
+    const updates = { ...editing, ...overrides }
+    updateBadge(id, updates)
     setEditing(null)
   }
 
@@ -715,7 +720,10 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
                     accept="image/*"
                     label="Upload"
                     githubToken={githubToken}
-                    onUpload={(url) => setEditing({ ...editing, image: url })}
+                    onUpload={(url) => {
+                      setEditing({ ...editing, image: url })
+                      handleUpdate(badge.id, { image: url })
+                    }}
                   />
                 </div>
                 <input

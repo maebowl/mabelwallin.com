@@ -16,7 +16,9 @@
       "Bash(git remote add:*)",
       "Bash(git push:*)",
       "Bash(git clone:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git pull:*)",
+      "Bash(git fetch:*)"
     ]
   }
 }
