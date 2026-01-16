@@ -143,7 +143,7 @@ export async function uploadFileToGitHub(file, token) {
 }
 
 function generateSiteDataFile(data) {
-  const { siteSettings, videos, designs, socials, badges, music } = data
+  const { siteSettings, videos, designs, socials, badges, cassettes } = data
 
   // Helper to indent JSON properly
   const indent = (json) => {
@@ -159,7 +159,7 @@ const defaultData = {
   designs: ${indent(JSON.stringify(designs, null, 4))},
   socials: ${indent(JSON.stringify(socials, null, 4))},
   badges: ${indent(JSON.stringify(badges, null, 4))},
-  music: ${indent(JSON.stringify(music || [], null, 4))},
+  cassettes: ${indent(JSON.stringify(cassettes || [], null, 4))},
 }
 
 const SiteDataContext = createContext()
@@ -226,24 +226,58 @@ export function SiteDataProvider({ children }) {
     setData(prev => ({ ...prev, badges: newBadges }))
   }
 
-  const addSong = (song) => {
-    const id = Math.max(0, ...data.music.map(s => s.id)) + 1
-    setData(prev => ({ ...prev, music: [...prev.music, { ...song, id }] }))
+  const addCassette = (cassette) => {
+    const id = Math.max(0, ...data.cassettes.map(c => c.id)) + 1
+    setData(prev => ({ ...prev, cassettes: [...prev.cassettes, { ...cassette, id, songs: [] }] }))
   }
 
-  const updateSong = (id, updates) => {
+  const updateCassette = (id, updates) => {
     setData(prev => ({
       ...prev,
-      music: prev.music.map(s => s.id === id ? { ...s, ...updates } : s)
+      cassettes: prev.cassettes.map(c => c.id === id ? { ...c, ...updates } : c)
     }))
   }
 
-  const deleteSong = (id) => {
-    setData(prev => ({ ...prev, music: prev.music.filter(s => s.id !== id) }))
+  const deleteCassette = (id) => {
+    setData(prev => ({ ...prev, cassettes: prev.cassettes.filter(c => c.id !== id) }))
   }
 
-  const reorderMusic = (newMusic) => {
-    setData(prev => ({ ...prev, music: newMusic }))
+  const addSongToCassette = (cassetteId, song) => {
+    setData(prev => ({
+      ...prev,
+      cassettes: prev.cassettes.map(c => {
+        if (c.id !== cassetteId) return c
+        const songId = Math.max(0, ...c.songs.map(s => s.id)) + 1
+        return { ...c, songs: [...c.songs, { ...song, id: songId }] }
+      })
+    }))
+  }
+
+  const updateSongInCassette = (cassetteId, songId, updates) => {
+    setData(prev => ({
+      ...prev,
+      cassettes: prev.cassettes.map(c => {
+        if (c.id !== cassetteId) return c
+        return { ...c, songs: c.songs.map(s => s.id === songId ? { ...s, ...updates } : s) }
+      })
+    }))
+  }
+
+  const deleteSongFromCassette = (cassetteId, songId) => {
+    setData(prev => ({
+      ...prev,
+      cassettes: prev.cassettes.map(c => {
+        if (c.id !== cassetteId) return c
+        return { ...c, songs: c.songs.filter(s => s.id !== songId) }
+      })
+    }))
+  }
+
+  const reorderSongsInCassette = (cassetteId, newSongs) => {
+    setData(prev => ({
+      ...prev,
+      cassettes: prev.cassettes.map(c => c.id === cassetteId ? { ...c, songs: newSongs } : c)
+    }))
   }
 
   const updateSiteSettings = (section, updates) => {
@@ -274,10 +308,13 @@ export function SiteDataProvider({ children }) {
       updateBadge,
       deleteBadge,
       reorderBadges,
-      addSong,
-      updateSong,
-      deleteSong,
-      reorderMusic,
+      addCassette,
+      updateCassette,
+      deleteCassette,
+      addSongToCassette,
+      updateSongInCassette,
+      deleteSongFromCassette,
+      reorderSongsInCassette,
       updateSiteSettings,
       resetToDefaults,
     }}>

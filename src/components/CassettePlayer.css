@@ -6,7 +6,7 @@
   width: 56px;
   height: 56px;
   background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-  border: 2px solid #fbbf24;
+  border: 2px solid var(--cassette-color, #fbbf24);
   border-radius: 12px;
   cursor: pointer;
   z-index: 1000;
@@ -19,7 +19,7 @@
 
 .cassette-toggle:hover {
   transform: scale(1.05);
-  border-color: #f59e0b;
+  filter: brightness(1.1);
 }
 
 .cassette-icon {
@@ -113,6 +113,79 @@
 
 .cassette-close:hover {
   color: #fff;
+}
+
+/* Cassette selector */
+.cassette-selector-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  transition: filter 0.15s ease;
+}
+
+.cassette-selector-btn:hover {
+  filter: brightness(1.2);
+}
+
+.selector-arrow {
+  font-size: 0.5rem;
+  margin-left: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.cassette-selector {
+  background: #1a1a1a;
+  border: 2px solid #444;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.cassette-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.cassette-option:hover {
+  background: #2d2d2d;
+}
+
+.cassette-option.active {
+  background: #2d2d2d;
+}
+
+.cassette-option-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cassette-option-name {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cassette-option-count {
+  font-size: 0.625rem;
+  color: #888;
 }
 
 /* Cassette tape visual */
@@ -401,7 +474,7 @@
 }
 
 .playlist-track.active .track-title {
-  color: #fbbf24;
+  color: var(--cassette-color, #fbbf24);
 }
 
 .track-number {

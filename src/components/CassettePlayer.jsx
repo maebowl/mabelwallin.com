@@ -2,9 +2,20 @@ import { useState, useRef, useEffect } from 'react'
 import { useSiteData } from '../data/siteData'
 import './CassettePlayer.css'
 
+const CASSETTE_COLORS = {
+  amber: { primary: '#fbbf24', secondary: '#f59e0b', label: 'Amber' },
+  pink: { primary: '#f472b6', secondary: '#ec4899', label: 'Pink' },
+  cyan: { primary: '#22d3ee', secondary: '#06b6d4', label: 'Cyan' },
+  lime: { primary: '#a3e635', secondary: '#84cc16', label: 'Lime' },
+  purple: { primary: '#a78bfa', secondary: '#8b5cf6', label: 'Purple' },
+  red: { primary: '#f87171', secondary: '#ef4444', label: 'Red' },
+}
+
 export default function CassettePlayer() {
-  const { music } = useSiteData()
+  const { cassettes } = useSiteData()
   const [isOpen, setIsOpen] = useState(false)
+  const [showSelector, setShowSelector] = useState(false)
+  const [selectedCassetteId, setSelectedCassetteId] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -12,7 +23,27 @@ export default function CassettePlayer() {
   const [volume, setVolume] = useState(0.7)
   const audioRef = useRef(null)
 
-  const currentSong = music[currentIndex]
+  // Get cassettes that have songs
+  const cassettesWithSongs = cassettes.filter(c => c.songs && c.songs.length > 0)
+  const selectedCassette = cassettesWithSongs.find(c => c.id === selectedCassetteId) || cassettesWithSongs[0]
+  const songs = selectedCassette?.songs || []
+  const currentSong = songs[currentIndex]
+  const cassetteColor = CASSETTE_COLORS[selectedCassette?.color] || CASSETTE_COLORS.amber
+
+  // Auto-select first cassette if none selected
+  useEffect(() => {
+    if (!selectedCassetteId && cassettesWithSongs.length > 0) {
+      setSelectedCassetteId(cassettesWithSongs[0].id)
+    }
+  }, [cassettesWithSongs, selectedCassetteId])
+
+  // Reset track when switching cassettes
+  useEffect(() => {
+    setCurrentIndex(0)
+    setProgress(0)
+    setDuration(0)
+    setIsPlaying(false)
+  }, [selectedCassetteId])
 
   useEffect(() => {
     if (audioRef.current) {
@@ -38,7 +69,7 @@ export default function CassettePlayer() {
   }
 
   const handleEnded = () => {
-    if (currentIndex < music.length - 1) {
+    if (currentIndex < songs.length - 1) {
       setCurrentIndex(currentIndex + 1)
     } else {
       setCurrentIndex(0)
@@ -59,13 +90,13 @@ export default function CassettePlayer() {
   }
 
   const prevTrack = () => {
-    if (music.length === 0) return
-    setCurrentIndex(currentIndex > 0 ? currentIndex - 1 : music.length - 1)
+    if (songs.length === 0) return
+    setCurrentIndex(currentIndex > 0 ? currentIndex - 1 : songs.length - 1)
   }
 
   const nextTrack = () => {
-    if (music.length === 0) return
-    setCurrentIndex(currentIndex < music.length - 1 ? currentIndex + 1 : 0)
+    if (songs.length === 0) return
+    setCurrentIndex(currentIndex < songs.length - 1 ? currentIndex + 1 : 0)
   }
 
   const formatTime = (time) => {
@@ -75,7 +106,12 @@ export default function CassettePlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  if (music.length === 0) return null
+  const selectCassette = (cassette) => {
+    setSelectedCassetteId(cassette.id)
+    setShowSelector(false)
+  }
+
+  if (cassettesWithSongs.length === 0) return null
 
   return (
     <>
@@ -84,12 +120,13 @@ export default function CassettePlayer() {
         className="cassette-toggle"
         onClick={() => setIsOpen(!isOpen)}
         title="Music Player"
+        style={{ '--cassette-color': cassetteColor.primary }}
       >
         <div className={`cassette-icon ${isPlaying ? 'playing' : ''}`}>
           <div className="cassette-body">
             <div className="cassette-window">
-              <div className="cassette-reel left"></div>
-              <div className="cassette-reel right"></div>
+              <div className="cassette-reel left" style={{ background: cassetteColor.primary }}></div>
+              <div className="cassette-reel right" style={{ background: cassetteColor.primary }}></div>
             </div>
           </div>
         </div>
@@ -98,22 +135,49 @@ export default function CassettePlayer() {
       {/* Player panel */}
       <div className={`cassette-player ${isOpen ? 'open' : ''}`}>
         <div className="cassette-header">
-          <span className="cassette-label">mabel's mixtape</span>
+          <button
+            className="cassette-label cassette-selector-btn"
+            onClick={() => setShowSelector(!showSelector)}
+            style={{ color: cassetteColor.primary }}
+          >
+            {selectedCassette?.name || "mabel's mixtape"}
+            {cassettesWithSongs.length > 1 && <span className="selector-arrow">▼</span>}
+          </button>
           <button className="cassette-close" onClick={() => setIsOpen(false)}>×</button>
         </div>
 
-        <div className="cassette-tape">
+        {/* Cassette selector dropdown */}
+        {showSelector && cassettesWithSongs.length > 1 && (
+          <div className="cassette-selector">
+            {cassettesWithSongs.map((cassette) => {
+              const color = CASSETTE_COLORS[cassette.color] || CASSETTE_COLORS.amber
+              return (
+                <button
+                  key={cassette.id}
+                  className={`cassette-option ${cassette.id === selectedCassetteId ? 'active' : ''}`}
+                  onClick={() => selectCassette(cassette)}
+                >
+                  <div className="cassette-option-icon" style={{ background: color.primary }}></div>
+                  <span className="cassette-option-name">{cassette.name}</span>
+                  <span className="cassette-option-count">{cassette.songs.length} songs</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+
+        <div className="cassette-tape" style={{ '--cassette-color': cassetteColor.primary }}>
           <div className="tape-label">
             <span className="tape-title">{currentSong?.title || 'No track'}</span>
             <span className="tape-artist">{currentSong?.artist || ''}</span>
           </div>
           <div className="tape-reels">
             <div className={`tape-reel left ${isPlaying ? 'spinning' : ''}`}>
-              <div className="reel-center"></div>
+              <div className="reel-center" style={{ background: cassetteColor.primary }}></div>
             </div>
             <div className="tape-window"></div>
             <div className={`tape-reel right ${isPlaying ? 'spinning' : ''}`}>
-              <div className="reel-center"></div>
+              <div className="reel-center" style={{ background: cassetteColor.primary }}></div>
             </div>
           </div>
         </div>
@@ -121,7 +185,10 @@ export default function CassettePlayer() {
         <div className="cassette-progress" onClick={handleSeek}>
           <div
             className="progress-fill"
-            style={{ width: duration ? `${(progress / duration) * 100}%` : '0%' }}
+            style={{
+              width: duration ? `${(progress / duration) * 100}%` : '0%',
+              background: `linear-gradient(90deg, ${cassetteColor.primary}, ${cassetteColor.secondary})`
+            }}
           ></div>
         </div>
 
@@ -134,7 +201,15 @@ export default function CassettePlayer() {
           <button className="control-btn" onClick={prevTrack} title="Previous">
             <span className="control-icon">⏮</span>
           </button>
-          <button className="control-btn play-btn" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
+          <button
+            className="control-btn play-btn"
+            onClick={togglePlay}
+            title={isPlaying ? 'Pause' : 'Play'}
+            style={{
+              background: `linear-gradient(180deg, ${cassetteColor.primary} 0%, ${cassetteColor.secondary} 100%)`,
+              borderColor: cassetteColor.secondary
+            }}
+          >
             <span className="control-icon">{isPlaying ? '⏸' : '▶'}</span>
           </button>
           <button className="control-btn" onClick={nextTrack} title="Next">
@@ -152,13 +227,14 @@ export default function CassettePlayer() {
             value={volume}
             onChange={(e) => setVolume(parseFloat(e.target.value))}
             className="volume-slider"
+            style={{ '--cassette-color': cassetteColor.primary }}
           />
         </div>
 
         <div className="cassette-playlist">
           <div className="playlist-header">playlist</div>
           <div className="playlist-tracks">
-            {music.map((song, index) => (
+            {songs.map((song, index) => (
               <button
                 key={song.id}
                 className={`playlist-track ${index === currentIndex ? 'active' : ''}`}
@@ -166,6 +242,7 @@ export default function CassettePlayer() {
                   setCurrentIndex(index)
                   setIsPlaying(true)
                 }}
+                style={{ '--cassette-color': cassetteColor.primary }}
               >
                 <span className="track-number">{index + 1}.</span>
                 <span className="track-info">

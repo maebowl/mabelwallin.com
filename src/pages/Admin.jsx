@@ -18,13 +18,14 @@ function Admin() {
   const [saveStatus, setSaveStatus] = useState('')
 
   const {
-    siteSettings, videos, designs, socials, badges, music,
+    siteSettings, videos, designs, socials, badges, cassettes,
     updateSiteSettings,
     addVideo, updateVideo, deleteVideo,
     addDesign, updateDesign, deleteDesign,
     updateSocial,
     addBadge, updateBadge, deleteBadge, reorderBadges,
-    addSong, updateSong, deleteSong, reorderMusic,
+    addCassette, updateCassette, deleteCassette,
+    addSongToCassette, updateSongInCassette, deleteSongFromCassette, reorderSongsInCassette,
     resetToDefaults
   } = useSiteData()
 
@@ -93,92 +94,121 @@ function Admin() {
     const id = Math.max(0, ...videos.map(v => v.id)) + 1
     const newVideos = [...videos, { ...video, id }]
     addVideo(video)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, music })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, cassettes })
   }
 
   const handleUpdateVideo = async (id, updates) => {
     const newVideos = videos.map(v => v.id === id ? { ...v, ...updates } : v)
     updateVideo(id, updates)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, music })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, cassettes })
   }
 
   const handleDeleteVideo = async (id) => {
     const newVideos = videos.filter(v => v.id !== id)
     deleteVideo(id)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, music })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, cassettes })
   }
 
   const handleAddDesign = async (design) => {
     const id = Math.max(0, ...designs.map(d => d.id)) + 1
     const newDesigns = [...designs, { ...design, id }]
     addDesign(design)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, music })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, cassettes })
   }
 
   const handleUpdateDesign = async (id, updates) => {
     const newDesigns = designs.map(d => d.id === id ? { ...d, ...updates } : d)
     updateDesign(id, updates)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, music })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, cassettes })
   }
 
   const handleDeleteDesign = async (id) => {
     const newDesigns = designs.filter(d => d.id !== id)
     deleteDesign(id)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, music })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, cassettes })
   }
 
   const handleUpdateSocial = async (id, updates) => {
     const newSocials = socials.map(s => s.id === id ? { ...s, ...updates } : s)
     updateSocial(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials: newSocials, badges, music })
+    await autoSave({ siteSettings, videos, designs, socials: newSocials, badges, cassettes })
   }
 
   const handleAddBadge = async (badge) => {
     const id = Math.max(0, ...badges.map(b => b.id)) + 1
     const newBadges = [...badges, { ...badge, id }]
     addBadge(badge)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, cassettes })
   }
 
   const handleUpdateBadge = async (id, updates) => {
     const newBadges = badges.map(b => b.id === id ? { ...b, ...updates } : b)
     updateBadge(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, cassettes })
   }
 
   const handleDeleteBadge = async (id) => {
     const newBadges = badges.filter(b => b.id !== id)
     deleteBadge(id)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, cassettes })
   }
 
   const handleReorderBadges = async (newBadges) => {
     reorderBadges(newBadges)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, cassettes })
   }
 
-  const handleAddSong = async (song) => {
-    const id = Math.max(0, ...music.map(s => s.id)) + 1
-    const newMusic = [...music, { ...song, id }]
-    addSong(song)
-    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  const handleAddCassette = async (cassette) => {
+    const id = Math.max(0, ...cassettes.map(c => c.id)) + 1
+    const newCassettes = [...cassettes, { ...cassette, id, songs: [] }]
+    addCassette(cassette)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
   }
 
-  const handleUpdateSong = async (id, updates) => {
-    const newMusic = music.map(s => s.id === id ? { ...s, ...updates } : s)
-    updateSong(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  const handleUpdateCassette = async (id, updates) => {
+    const newCassettes = cassettes.map(c => c.id === id ? { ...c, ...updates } : c)
+    updateCassette(id, updates)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
   }
 
-  const handleDeleteSong = async (id) => {
-    const newMusic = music.filter(s => s.id !== id)
-    deleteSong(id)
-    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  const handleDeleteCassette = async (id) => {
+    const newCassettes = cassettes.filter(c => c.id !== id)
+    deleteCassette(id)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
   }
 
-  const handleReorderMusic = async (newMusic) => {
-    reorderMusic(newMusic)
-    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  const handleAddSongToCassette = async (cassetteId, song) => {
+    const newCassettes = cassettes.map(c => {
+      if (c.id !== cassetteId) return c
+      const songId = Math.max(0, ...c.songs.map(s => s.id)) + 1
+      return { ...c, songs: [...c.songs, { ...song, id: songId }] }
+    })
+    addSongToCassette(cassetteId, song)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
+  }
+
+  const handleUpdateSongInCassette = async (cassetteId, songId, updates) => {
+    const newCassettes = cassettes.map(c => {
+      if (c.id !== cassetteId) return c
+      return { ...c, songs: c.songs.map(s => s.id === songId ? { ...s, ...updates } : s) }
+    })
+    updateSongInCassette(cassetteId, songId, updates)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
+  }
+
+  const handleDeleteSongFromCassette = async (cassetteId, songId) => {
+    const newCassettes = cassettes.map(c => {
+      if (c.id !== cassetteId) return c
+      return { ...c, songs: c.songs.filter(s => s.id !== songId) }
+    })
+    deleteSongFromCassette(cassetteId, songId)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
+  }
+
+  const handleReorderSongsInCassette = async (cassetteId, newSongs) => {
+    const newCassettes = cassettes.map(c => c.id === cassetteId ? { ...c, songs: newSongs } : c)
+    reorderSongsInCassette(cassetteId, newSongs)
+    await autoSave({ siteSettings, videos, designs, socials, badges, cassettes: newCassettes })
   }
 
   const handleUpdateSiteSettings = async (section, updates) => {
@@ -187,7 +217,7 @@ function Admin() {
       [section]: { ...siteSettings[section], ...updates }
     }
     updateSiteSettings(section, updates)
-    await autoSave({ siteSettings: newSettings, videos, designs, socials, badges, music })
+    await autoSave({ siteSettings: newSettings, videos, designs, socials, badges, cassettes })
   }
 
   if (!isAuthenticated) {
@@ -270,10 +300,10 @@ function Admin() {
             Badges
           </button>
           <button
-            className={`tab ${activeTab === 'music' ? 'active' : ''}`}
-            onClick={() => setActiveTab('music')}
+            className={`tab ${activeTab === 'cassettes' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cassettes')}
           >
-            Music
+            Cassettes
           </button>
           <button
             className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
@@ -321,13 +351,16 @@ function Admin() {
               saving={saving}
             />
           )}
-          {activeTab === 'music' && (
-            <MusicManager
-              music={music}
-              addSong={handleAddSong}
-              updateSong={handleUpdateSong}
-              deleteSong={handleDeleteSong}
-              reorderMusic={handleReorderMusic}
+          {activeTab === 'cassettes' && (
+            <CassettesManager
+              cassettes={cassettes}
+              addCassette={handleAddCassette}
+              updateCassette={handleUpdateCassette}
+              deleteCassette={handleDeleteCassette}
+              addSongToCassette={handleAddSongToCassette}
+              updateSongInCassette={handleUpdateSongInCassette}
+              deleteSongFromCassette={handleDeleteSongFromCassette}
+              reorderSongsInCassette={handleReorderSongsInCassette}
               githubToken={githubToken}
               saving={saving}
             />
@@ -837,140 +870,272 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
   )
 }
 
-function MusicManager({ music, addSong, updateSong, deleteSong, reorderMusic, githubToken, saving }) {
-  const [editing, setEditing] = useState(null)
+const CASSETTE_COLORS = [
+  { value: 'amber', label: 'Amber', color: '#fbbf24' },
+  { value: 'pink', label: 'Pink', color: '#f472b6' },
+  { value: 'cyan', label: 'Cyan', color: '#22d3ee' },
+  { value: 'lime', label: 'Lime', color: '#a3e635' },
+  { value: 'purple', label: 'Purple', color: '#a78bfa' },
+  { value: 'red', label: 'Red', color: '#f87171' },
+]
+
+function CassettesManager({
+  cassettes, addCassette, updateCassette, deleteCassette,
+  addSongToCassette, updateSongInCassette, deleteSongFromCassette, reorderSongsInCassette,
+  githubToken, saving
+}) {
+  const [selectedCassette, setSelectedCassette] = useState(null)
+  const [editingCassette, setEditingCassette] = useState(null)
+  const [editingSong, setEditingSong] = useState(null)
+  const [newCassette, setNewCassette] = useState({ name: '', color: 'amber' })
   const [newSong, setNewSong] = useState({ title: '', artist: '', url: '' })
 
-  const handleAdd = () => {
-    if (!newSong.title || !newSong.url) return
-    addSong(newSong)
+  const handleAddCassette = () => {
+    if (!newCassette.name) return
+    addCassette(newCassette)
+    setNewCassette({ name: '', color: 'amber' })
+  }
+
+  const handleUpdateCassette = (id) => {
+    updateCassette(id, editingCassette)
+    setEditingCassette(null)
+  }
+
+  const handleAddSong = () => {
+    if (!newSong.title || !newSong.url || !selectedCassette) return
+    addSongToCassette(selectedCassette.id, newSong)
     setNewSong({ title: '', artist: '', url: '' })
   }
 
-  const handleUpdate = (id) => {
-    updateSong(id, editing)
-    setEditing(null)
+  const handleUpdateSong = (songId) => {
+    updateSongInCassette(selectedCassette.id, songId, editingSong)
+    setEditingSong(null)
   }
 
   const moveSong = (index, direction) => {
+    if (!selectedCassette) return
+    const songs = selectedCassette.songs
     const newIndex = index + direction
-    if (newIndex < 0 || newIndex >= music.length) return
-    const newMusic = [...music]
-    const [moved] = newMusic.splice(index, 1)
-    newMusic.splice(newIndex, 0, moved)
-    reorderMusic(newMusic)
+    if (newIndex < 0 || newIndex >= songs.length) return
+    const newSongs = [...songs]
+    const [moved] = newSongs.splice(index, 1)
+    newSongs.splice(newIndex, 0, moved)
+    reorderSongsInCassette(selectedCassette.id, newSongs)
   }
+
+  // Update selectedCassette when cassettes change
+  const currentCassette = selectedCassette ? cassettes.find(c => c.id === selectedCassette.id) : null
 
   return (
     <div className="manager">
-      <h2>Music</h2>
-      <p className="manager-note">Add songs for the cassette player. Upload MP3 files or paste audio URLs.</p>
+      <h2>Cassettes</h2>
+      <p className="manager-note">Create cassette mixtapes with different colors. Each cassette has its own playlist.</p>
 
       <div className="add-form">
-        <h3>Add New Song</h3>
+        <h3>Create New Cassette</h3>
         <input
-          placeholder="Song title"
-          value={newSong.title}
-          onChange={(e) => setNewSong({ ...newSong, title: e.target.value })}
+          placeholder="Cassette name (e.g., chill vibes)"
+          value={newCassette.name}
+          onChange={(e) => setNewCassette({ ...newCassette, name: e.target.value })}
         />
-        <input
-          placeholder="Artist"
-          value={newSong.artist}
-          onChange={(e) => setNewSong({ ...newSong, artist: e.target.value })}
-        />
-        <div className="media-input-group">
-          <input
-            placeholder="Audio URL (MP3, etc.)"
-            value={newSong.url}
-            onChange={(e) => setNewSong({ ...newSong, url: e.target.value })}
-          />
-          <FileUpload
-            accept="audio/*"
-            label="Upload"
-            githubToken={githubToken}
-            inputId="file-music-add"
-            onUpload={(url) => setNewSong({ ...newSong, url })}
-          />
+        <div className="color-picker">
+          <span>Color:</span>
+          <div className="color-options">
+            {CASSETTE_COLORS.map(c => (
+              <button
+                key={c.value}
+                type="button"
+                className={`color-option ${newCassette.color === c.value ? 'selected' : ''}`}
+                style={{ background: c.color }}
+                onClick={() => setNewCassette({ ...newCassette, color: c.value })}
+                title={c.label}
+              />
+            ))}
+          </div>
         </div>
-        <button onClick={handleAdd} disabled={saving}>
-          {saving ? 'Saving...' : 'Add Song'}
+        <button onClick={handleAddCassette} disabled={saving}>
+          {saving ? 'Saving...' : 'Create Cassette'}
         </button>
       </div>
 
-      <div className="items-list">
-        {music.map((song, index) => (
-          <div key={song.id} className="item">
-            {editing?.id === song.id ? (
-              <>
-                <input
-                  value={editing.title}
-                  onChange={(e) => setEditing(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="Song title"
-                />
-                <input
-                  value={editing.artist || ''}
-                  onChange={(e) => setEditing(prev => ({ ...prev, artist: e.target.value }))}
-                  placeholder="Artist"
-                />
-                <div className="media-input-group">
-                  <input
-                    value={editing.url}
-                    onChange={(e) => setEditing(prev => ({ ...prev, url: e.target.value }))}
-                    placeholder="Audio URL"
-                  />
-                  <FileUpload
-                    accept="audio/*"
-                    label="Upload"
-                    githubToken={githubToken}
-                    inputId={`file-music-edit-${song.id}`}
-                    onUpload={(url) => {
-                      setEditing(prev => {
-                        const updated = { ...prev, url }
-                        updateSong(song.id, updated)
-                        return null
-                      })
-                    }}
-                  />
+      <div className="cassettes-list">
+        <h3>Your Cassettes</h3>
+        {cassettes.length === 0 ? (
+          <p className="empty-note">No cassettes yet. Create one above!</p>
+        ) : (
+          <div className="items-list">
+            {cassettes.map((cassette) => {
+              const colorInfo = CASSETTE_COLORS.find(c => c.value === cassette.color) || CASSETTE_COLORS[0]
+              return (
+                <div key={cassette.id} className={`item cassette-item ${currentCassette?.id === cassette.id ? 'selected' : ''}`}>
+                  {editingCassette?.id === cassette.id ? (
+                    <>
+                      <input
+                        value={editingCassette.name}
+                        onChange={(e) => setEditingCassette(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Cassette name"
+                      />
+                      <div className="color-picker">
+                        <span>Color:</span>
+                        <div className="color-options">
+                          {CASSETTE_COLORS.map(c => (
+                            <button
+                              key={c.value}
+                              type="button"
+                              className={`color-option ${editingCassette.color === c.value ? 'selected' : ''}`}
+                              style={{ background: c.color }}
+                              onClick={() => setEditingCassette(prev => ({ ...prev, color: c.value }))}
+                              title={c.label}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="item-actions">
+                        <button onClick={() => handleUpdateCassette(cassette.id)} disabled={saving}>
+                          {saving ? 'Saving...' : 'Save'}
+                        </button>
+                        <button onClick={() => setEditingCassette(null)}>Cancel</button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="item-info" onClick={() => setSelectedCassette(cassette)} style={{ cursor: 'pointer' }}>
+                        <div className="cassette-preview" style={{ background: colorInfo.color }}></div>
+                        <strong>{cassette.name}</strong>
+                        <span className="item-meta">{cassette.songs?.length || 0} songs</span>
+                      </div>
+                      <div className="item-actions">
+                        <button onClick={() => setSelectedCassette(cassette)}>
+                          {currentCassette?.id === cassette.id ? 'Editing' : 'Edit Songs'}
+                        </button>
+                        <button onClick={() => setEditingCassette({ ...cassette })}>Rename</button>
+                        <button onClick={() => deleteCassette(cassette.id)} className="btn-danger" disabled={saving}>
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="item-actions">
-                  <button onClick={() => handleUpdate(song.id)} disabled={saving}>
-                    {saving ? 'Saving...' : 'Save'}
-                  </button>
-                  <button onClick={() => setEditing(null)}>Cancel</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="item-info">
-                  <strong>{song.title}</strong>
-                  <span className="item-meta">{song.artist || 'Unknown artist'}</span>
-                  <span className="item-meta item-url">{song.url}</span>
-                </div>
-                <div className="item-actions">
-                  <button
-                    onClick={() => moveSong(index, -1)}
-                    disabled={saving || index === 0}
-                    title="Move up"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    onClick={() => moveSong(index, 1)}
-                    disabled={saving || index === music.length - 1}
-                    title="Move down"
-                  >
-                    ↓
-                  </button>
-                  <button onClick={() => setEditing({ ...song })}>Edit</button>
-                  <button onClick={() => deleteSong(song.id)} className="btn-danger" disabled={saving}>
-                    Delete
-                  </button>
-                </div>
-              </>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      {currentCassette && (
+        <div className="cassette-songs-editor">
+          <h3>Songs in "{currentCassette.name}"</h3>
+
+          <div className="add-form">
+            <h4>Add Song</h4>
+            <input
+              placeholder="Song title"
+              value={newSong.title}
+              onChange={(e) => setNewSong({ ...newSong, title: e.target.value })}
+            />
+            <input
+              placeholder="Artist"
+              value={newSong.artist}
+              onChange={(e) => setNewSong({ ...newSong, artist: e.target.value })}
+            />
+            <div className="media-input-group">
+              <input
+                placeholder="Audio URL (MP3, etc.)"
+                value={newSong.url}
+                onChange={(e) => setNewSong({ ...newSong, url: e.target.value })}
+              />
+              <FileUpload
+                accept="audio/*"
+                label="Upload"
+                githubToken={githubToken}
+                inputId={`file-cassette-${currentCassette.id}-add`}
+                onUpload={(url) => setNewSong({ ...newSong, url })}
+              />
+            </div>
+            <button onClick={handleAddSong} disabled={saving}>
+              {saving ? 'Saving...' : 'Add Song'}
+            </button>
+          </div>
+
+          <div className="items-list">
+            {(currentCassette.songs || []).map((song, index) => (
+              <div key={song.id} className="item">
+                {editingSong?.id === song.id ? (
+                  <>
+                    <input
+                      value={editingSong.title}
+                      onChange={(e) => setEditingSong(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="Song title"
+                    />
+                    <input
+                      value={editingSong.artist || ''}
+                      onChange={(e) => setEditingSong(prev => ({ ...prev, artist: e.target.value }))}
+                      placeholder="Artist"
+                    />
+                    <div className="media-input-group">
+                      <input
+                        value={editingSong.url}
+                        onChange={(e) => setEditingSong(prev => ({ ...prev, url: e.target.value }))}
+                        placeholder="Audio URL"
+                      />
+                      <FileUpload
+                        accept="audio/*"
+                        label="Upload"
+                        githubToken={githubToken}
+                        inputId={`file-cassette-${currentCassette.id}-song-${song.id}`}
+                        onUpload={(url) => {
+                          setEditingSong(prev => {
+                            const updated = { ...prev, url }
+                            updateSongInCassette(currentCassette.id, song.id, updated)
+                            return null
+                          })
+                        }}
+                      />
+                    </div>
+                    <div className="item-actions">
+                      <button onClick={() => handleUpdateSong(song.id)} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save'}
+                      </button>
+                      <button onClick={() => setEditingSong(null)}>Cancel</button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="item-info">
+                      <strong>{song.title}</strong>
+                      <span className="item-meta">{song.artist || 'Unknown artist'}</span>
+                      <span className="item-meta item-url">{song.url}</span>
+                    </div>
+                    <div className="item-actions">
+                      <button
+                        onClick={() => moveSong(index, -1)}
+                        disabled={saving || index === 0}
+                        title="Move up"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        onClick={() => moveSong(index, 1)}
+                        disabled={saving || index === (currentCassette.songs?.length || 0) - 1}
+                        title="Move down"
+                      >
+                        ↓
+                      </button>
+                      <button onClick={() => setEditingSong({ ...song })}>Edit</button>
+                      <button onClick={() => deleteSongFromCassette(currentCassette.id, song.id)} className="btn-danger" disabled={saving}>
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+            {(currentCassette.songs?.length || 0) === 0 && (
+              <p className="empty-note">No songs yet. Add some above!</p>
             )}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
