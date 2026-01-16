@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { SiteDataProvider } from './data/siteData';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -19,8 +19,8 @@ function App() {
             <Route path="videos" element={<Videos />} />
             <Route path="designs" element={<Design />} />
           </Route>
-          <Route path="videos" element={<Videos />} />
-          <Route path="designs" element={<Design />} />
+          <Route path="videos" element={<Navigate to="/portfolio/videos" replace />} />
+          <Route path="designs" element={<Navigate to="/portfolio/designs" replace />} />
           <Route path="contact" element={<Contact />} />
           <Route path="admin" element={<Admin />} />
         </Route>
