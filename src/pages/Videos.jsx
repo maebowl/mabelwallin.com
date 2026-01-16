@@ -1,49 +1,20 @@
 import { useState } from 'react';
+import { useSiteData } from '../data/siteData';
 
 export default function Videos() {
-  const [videos] = useState([
-    {
-      id: 1,
-      title: 'yosemite vlog',
-      description: 'sequel coming soon',
-      thumbnail: 'https://img.youtube.com/vi/Ttutmwz4BtE/maxresdefault.jpg',
-      videoUrl: 'https://youtu.be/Ttutmwz4BtE',
-      videoId: 'Ttutmwz4BtE',
-    },
-    {
-      id: 2,
-      title: 'Mabel and Bryce go fishing',
-      description: '',
-      thumbnail: 'https://img.youtube.com/vi/hJfbYTFYudE/hqdefault.jpg',
-      videoUrl: 'https://youtu.be/hJfbYTFYudE',
-      videoId: 'hJfbYTFYudE',
-    },
-    {
-      id: 3,
-      title: "Mabel's Train Adventure",
-      description: '',
-      thumbnail: 'https://img.youtube.com/vi/cJezhteJgT8/hqdefault.jpg',
-      videoUrl: 'https://youtu.be/cJezhteJgT8',
-      videoId: 'cJezhteJgT8',
-    },
-    {
-      id: 4,
-      title: 'The Abandoned Pub',
-      description: '',
-      thumbnail: 'https://img.youtube.com/vi/_RmdBZYhu4A/hqdefault.jpg',
-      videoUrl: 'https://youtu.be/_RmdBZYhu4A',
-      videoId: '_RmdBZYhu4A',
-    },
-  ]);
-
+  const { videos, siteSettings } = useSiteData();
   const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const getThumbnail = (video) => {
+    return `https://img.youtube.com/vi/${video.videoId}/${video.isVertical ? 'hqdefault' : 'maxresdefault'}.jpg`;
+  };
 
   return (
     <div className="space-y-8 px-4">
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">videos</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{siteSettings.videos.title}</h1>
         <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
-          stuff i've filmed and edited. still learning but having fun with it
+          {siteSettings.videos.intro}
         </p>
         <div className="mt-4">
           <a
@@ -73,7 +44,7 @@ export default function Videos() {
           >
             <div className="aspect-video bg-charcoal-300 relative group">
               <img
-                src={video.thumbnail}
+                src={getThumbnail(video)}
                 alt={video.title}
                 className="w-full h-full object-cover"
               />
@@ -133,7 +104,7 @@ export default function Videos() {
               </div>
               <div className="mt-4 text-center">
                 <a
-                  href={selectedVideo.videoUrl}
+                  href={`https://youtu.be/${selectedVideo.videoId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-amber-400 hover:text-amber-500 text-sm"

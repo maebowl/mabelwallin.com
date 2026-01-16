@@ -1,60 +1,16 @@
 import { useState } from 'react';
+import { useSiteData } from '../data/siteData';
 
 export default function Design() {
-  // Sample design data - replace with your actual design work
-  const [designs] = useState([
-    {
-      id: 1,
-      title: 'Design Project 1',
-      category: 'Branding',
-      description: 'Description of your first design project',
-      image: 'https://via.placeholder.com/800x600/8b5cf6/ffffff?text=Design+1',
-    },
-    {
-      id: 2,
-      title: 'Design Project 2',
-      category: 'Typography',
-      description: 'Description of your second design project',
-      image: 'https://via.placeholder.com/800x600/7c3aed/ffffff?text=Design+2',
-    },
-    {
-      id: 3,
-      title: 'Design Project 3',
-      category: 'Layout',
-      description: 'Description of your third design project',
-      image: 'https://via.placeholder.com/800x600/6d28d9/ffffff?text=Design+3',
-    },
-    {
-      id: 4,
-      title: 'Design Project 4',
-      category: 'Illustration',
-      description: 'Description of your fourth design project',
-      image: 'https://via.placeholder.com/800x600/5b21b6/ffffff?text=Design+4',
-    },
-    {
-      id: 5,
-      title: 'Design Project 5',
-      category: 'Poster Design',
-      description: 'Description of your fifth design project',
-      image: 'https://via.placeholder.com/800x600/4c1d95/ffffff?text=Design+5',
-    },
-    {
-      id: 6,
-      title: 'Design Project 6',
-      category: 'Digital Art',
-      description: 'Description of your sixth design project',
-      image: 'https://via.placeholder.com/800x600/3b0764/ffffff?text=Design+6',
-    },
-  ]);
-
+  const { designs, siteSettings } = useSiteData();
   const [selectedDesign, setSelectedDesign] = useState(null);
 
   return (
     <div className="space-y-8 px-4">
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">designs</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{siteSettings.designs.title}</h1>
         <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
-          photoshop stuff from class and random projects when i'm bored
+          {siteSettings.designs.intro}
         </p>
       </div>
 
@@ -76,9 +32,11 @@ export default function Design() {
               <h3 className="text-xl font-semibold text-white mb-2">
                 {design.title}
               </h3>
-              <span className="text-xs font-medium text-amber-400 bg-amber-400/20 px-2 py-1 rounded inline-block mb-2">
-                {design.category}
-              </span>
+              {design.category && (
+                <span className="text-xs font-medium text-amber-400 bg-amber-400/20 px-2 py-1 rounded inline-block mb-2">
+                  {design.category}
+                </span>
+              )}
               <p className="text-gray-300">{design.description}</p>
             </div>
           </div>
@@ -101,9 +59,11 @@ export default function Design() {
                   <h2 className="text-2xl font-bold text-white mb-1">
                     {selectedDesign.title}
                   </h2>
-                  <span className="text-sm font-medium text-amber-400 bg-amber-400/20 px-3 py-1 rounded">
-                    {selectedDesign.category}
-                  </span>
+                  {selectedDesign.category && (
+                    <span className="text-sm font-medium text-amber-400 bg-amber-400/20 px-3 py-1 rounded">
+                      {selectedDesign.category}
+                    </span>
+                  )}
                 </div>
                 <button
                   onClick={() => setSelectedDesign(null)}
