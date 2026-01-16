@@ -59,24 +59,84 @@ function Admin() {
     setTimeout(() => setSaveStatus(''), 3000)
   }
 
-  const handleSaveToGitHub = async () => {
+  // Auto-save to GitHub with updated data
+  const autoSave = async (updatedData) => {
     if (!githubToken) {
+      setSaveStatus('Error: Set your GitHub token first!')
       setShowTokenInput(true)
-      return
+      setTimeout(() => setSaveStatus(''), 3000)
+      return false
     }
 
     setSaving(true)
-    setSaveStatus('')
+    setSaveStatus('Saving...')
 
     try {
-      await saveToGitHub({ siteSettings, videos, designs, socials }, githubToken)
-      setSaveStatus('Saved to GitHub! Site will rebuild shortly.')
+      await saveToGitHub(updatedData, githubToken)
+      setSaveStatus('Saved!')
+      setTimeout(() => setSaveStatus(''), 2000)
+      return true
     } catch (err) {
       setSaveStatus(`Error: ${err.message}`)
+      setTimeout(() => setSaveStatus(''), 5000)
+      return false
     } finally {
       setSaving(false)
-      setTimeout(() => setSaveStatus(''), 5000)
     }
+  }
+
+  // Wrapped functions that save after updating
+  const handleAddVideo = async (video) => {
+    const id = Math.max(0, ...videos.map(v => v.id)) + 1
+    const newVideos = [...videos, { ...video, id }]
+    addVideo(video)
+    await autoSave({ siteSettings, videos: newVideos, designs, socials })
+  }
+
+  const handleUpdateVideo = async (id, updates) => {
+    const newVideos = videos.map(v => v.id === id ? { ...v, ...updates } : v)
+    updateVideo(id, updates)
+    await autoSave({ siteSettings, videos: newVideos, designs, socials })
+  }
+
+  const handleDeleteVideo = async (id) => {
+    const newVideos = videos.filter(v => v.id !== id)
+    deleteVideo(id)
+    await autoSave({ siteSettings, videos: newVideos, designs, socials })
+  }
+
+  const handleAddDesign = async (design) => {
+    const id = Math.max(0, ...designs.map(d => d.id)) + 1
+    const newDesigns = [...designs, { ...design, id }]
+    addDesign(design)
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials })
+  }
+
+  const handleUpdateDesign = async (id, updates) => {
+    const newDesigns = designs.map(d => d.id === id ? { ...d, ...updates } : d)
+    updateDesign(id, updates)
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials })
+  }
+
+  const handleDeleteDesign = async (id) => {
+    const newDesigns = designs.filter(d => d.id !== id)
+    deleteDesign(id)
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials })
+  }
+
+  const handleUpdateSocial = async (id, updates) => {
+    const newSocials = socials.map(s => s.id === id ? { ...s, ...updates } : s)
+    updateSocial(id, updates)
+    await autoSave({ siteSettings, videos, designs, socials: newSocials })
+  }
+
+  const handleUpdateSiteSettings = async (section, updates) => {
+    const newSettings = {
+      ...siteSettings,
+      [section]: { ...siteSettings[section], ...updates }
+    }
+    updateSiteSettings(section, updates)
+    await autoSave({ siteSettings: newSettings, videos, designs, socials })
   }
 
   if (!isAuthenticated) {
@@ -106,17 +166,14 @@ function Admin() {
         <div className="admin-header">
           <h1>admin</h1>
           <div className="admin-actions">
-            <button
-              onClick={handleSaveToGitHub}
-              className="btn-primary"
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : 'Save to GitHub'}
-            </button>
+            {saveStatus && (
+              <span className={`save-status-inline ${saveStatus.includes('Error') ? 'error' : 'success'}`}>
+                {saveStatus}
+              </span>
+            )}
             <button onClick={() => setShowTokenInput(!showTokenInput)} className="btn-secondary">
               {githubToken ? 'Change Token' : 'Set Token'}
             </button>
-            <button onClick={resetToDefaults} className="btn-secondary">Reset</button>
             <button onClick={handleLogout} className="btn-secondary">Logout</button>
           </div>
         </div>
@@ -133,12 +190,6 @@ function Admin() {
               />
               <button onClick={handleSaveToken}>Save Token</button>
             </div>
-          </div>
-        )}
-
-        {saveStatus && (
-          <div className={`save-status ${saveStatus.includes('Error') ? 'error' : 'success'}`}>
-            {saveStatus}
           </div>
         )}
 
@@ -173,25 +224,35 @@ function Admin() {
           {activeTab === 'videos' && (
             <VideosManager
               videos={videos}
-              addVideo={addVideo}
-              updateVideo={updateVideo}
-              deleteVideo={deleteVideo}
+              addVideo={handleAddVideo}
+              updateVideo={handleUpdateVideo}
+              deleteVideo={handleDeleteVideo}
+              saving={saving}
             />
           )}
           {activeTab === 'designs' && (
             <DesignsManager
               designs={designs}
-              addDesign={addDesign}
-              updateDesign={updateDesign}
-              deleteDesign={deleteDesign}
+              addDesign={handleAddDesign}
+              updateDesign={handleUpdateDesign}
+              deleteDesign={handleDeleteDesign}
               githubToken={githubToken}
+              saving={saving}
             />
           )}
           {activeTab === 'socials' && (
-            <SocialsManager socials={socials} updateSocial={updateSocial} />
+            <SocialsManager
+              socials={socials}
+              updateSocial={handleUpdateSocial}
+              saving={saving}
+            />
           )}
           {activeTab === 'settings' && (
-            <SiteSettingsManager siteSettings={siteSettings} updateSiteSettings={updateSiteSettings} />
+            <SiteSettingsManager
+              siteSettings={siteSettings}
+              updateSiteSettings={handleUpdateSiteSettings}
+              saving={saving}
+            />
           )}
         </div>
       </div>
@@ -247,7 +308,7 @@ function FileUpload({ onUpload, accept, label, githubToken }) {
   )
 }
 
-function VideosManager({ videos, addVideo, updateVideo, deleteVideo }) {
+function VideosManager({ videos, addVideo, updateVideo, deleteVideo, saving }) {
   const [editing, setEditing] = useState(null)
   const [newVideo, setNewVideo] = useState({ title: '', description: '', videoId: '', isVertical: false })
 
@@ -271,6 +332,7 @@ function VideosManager({ videos, addVideo, updateVideo, deleteVideo }) {
   return (
     <div className="manager">
       <h2>Videos</h2>
+      <p className="manager-note">Changes are saved to GitHub automatically.</p>
 
       <div className="add-form">
         <h3>Add New Video</h3>
@@ -297,7 +359,9 @@ function VideosManager({ videos, addVideo, updateVideo, deleteVideo }) {
           />
           Vertical video (shorts/reels)
         </label>
-        <button onClick={handleAdd}>Add Video</button>
+        <button onClick={handleAdd} disabled={saving}>
+          {saving ? 'Saving...' : 'Add Video'}
+        </button>
       </div>
 
       <div className="items-list">
@@ -329,7 +393,9 @@ function VideosManager({ videos, addVideo, updateVideo, deleteVideo }) {
                   Vertical video
                 </label>
                 <div className="item-actions">
-                  <button onClick={() => handleUpdate(video.id)}>Save</button>
+                  <button onClick={() => handleUpdate(video.id)} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </button>
                   <button onClick={() => setEditing(null)}>Cancel</button>
                 </div>
               </>
@@ -342,7 +408,9 @@ function VideosManager({ videos, addVideo, updateVideo, deleteVideo }) {
                 </div>
                 <div className="item-actions">
                   <button onClick={() => setEditing({ ...video })}>Edit</button>
-                  <button onClick={() => deleteVideo(video.id)} className="btn-danger">Delete</button>
+                  <button onClick={() => deleteVideo(video.id)} className="btn-danger" disabled={saving}>
+                    Delete
+                  </button>
                 </div>
               </>
             )}
@@ -353,7 +421,7 @@ function VideosManager({ videos, addVideo, updateVideo, deleteVideo }) {
   )
 }
 
-function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, githubToken }) {
+function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, githubToken, saving }) {
   const [editing, setEditing] = useState(null)
   const [newDesign, setNewDesign] = useState({ title: '', category: '', description: '', image: '' })
 
@@ -371,7 +439,7 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
   return (
     <div className="manager">
       <h2>Designs</h2>
-      <p className="manager-note">Upload images or paste a URL.</p>
+      <p className="manager-note">Upload images or paste a URL. Changes are saved to GitHub automatically.</p>
 
       <div className="add-form">
         <h3>Add New Design</h3>
@@ -403,7 +471,9 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
           value={newDesign.description}
           onChange={(e) => setNewDesign({ ...newDesign, description: e.target.value })}
         />
-        <button onClick={handleAdd}>Add Design</button>
+        <button onClick={handleAdd} disabled={saving}>
+          {saving ? 'Saving...' : 'Add Design'}
+        </button>
       </div>
 
       <div className="items-list">
@@ -440,7 +510,9 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
                   placeholder="Description"
                 />
                 <div className="item-actions">
-                  <button onClick={() => handleUpdate(design.id)}>Save</button>
+                  <button onClick={() => handleUpdate(design.id)} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </button>
                   <button onClick={() => setEditing(null)}>Cancel</button>
                 </div>
               </>
@@ -454,7 +526,9 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
                 </div>
                 <div className="item-actions">
                   <button onClick={() => setEditing({ ...design })}>Edit</button>
-                  <button onClick={() => deleteDesign(design.id)} className="btn-danger">Delete</button>
+                  <button onClick={() => deleteDesign(design.id)} className="btn-danger" disabled={saving}>
+                    Delete
+                  </button>
                 </div>
               </>
             )}
@@ -465,7 +539,7 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
   )
 }
 
-function SocialsManager({ socials, updateSocial }) {
+function SocialsManager({ socials, updateSocial, saving }) {
   const [editing, setEditing] = useState(null)
 
   const handleUpdate = (id) => {
@@ -476,7 +550,7 @@ function SocialsManager({ socials, updateSocial }) {
   return (
     <div className="manager">
       <h2>Contact Links</h2>
-      <p className="manager-note">Edit your social media links and handles.</p>
+      <p className="manager-note">Edit your social media links. Changes are saved to GitHub automatically.</p>
 
       <div className="items-list">
         {socials.map((social) => (
@@ -499,7 +573,9 @@ function SocialsManager({ socials, updateSocial }) {
                   placeholder="URL"
                 />
                 <div className="item-actions">
-                  <button onClick={() => handleUpdate(social.id)}>Save</button>
+                  <button onClick={() => handleUpdate(social.id)} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </button>
                   <button onClick={() => setEditing(null)}>Cancel</button>
                 </div>
               </>
@@ -522,38 +598,82 @@ function SocialsManager({ socials, updateSocial }) {
   )
 }
 
-function SiteSettingsManager({ siteSettings, updateSiteSettings }) {
+function SiteSettingsManager({ siteSettings, updateSiteSettings, saving }) {
+  const [pendingChanges, setPendingChanges] = useState({})
+
+  const handleFieldChange = (section, field, value) => {
+    setPendingChanges(prev => ({
+      ...prev,
+      [`${section}.${field}`]: { section, field, value }
+    }))
+  }
+
+  const handleSave = (section, field) => {
+    const key = `${section}.${field}`
+    if (pendingChanges[key]) {
+      updateSiteSettings(section, { [field]: pendingChanges[key].value })
+      setPendingChanges(prev => {
+        const next = { ...prev }
+        delete next[key]
+        return next
+      })
+    }
+  }
+
+  const getValue = (section, field) => {
+    const key = `${section}.${field}`
+    if (pendingChanges[key]) {
+      return pendingChanges[key].value
+    }
+    return siteSettings[section]?.[field] || ''
+  }
+
   return (
     <div className="manager">
       <h2>Site Settings</h2>
-      <p className="manager-note">Customize page titles and intro text.</p>
+      <p className="manager-note">Edit a field and click Save to push to GitHub.</p>
 
       <div className="settings-section">
         <h3>Home Page</h3>
         <div className="settings-fields">
           <label>
             <span>Greeting</span>
-            <input
-              value={siteSettings.hero.greeting}
-              onChange={(e) => updateSiteSettings('hero', { greeting: e.target.value })}
-              placeholder="hi, i'm"
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('hero', 'greeting')}
+                onChange={(e) => handleFieldChange('hero', 'greeting', e.target.value)}
+                placeholder="hi, i'm"
+              />
+              <button onClick={() => handleSave('hero', 'greeting')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
           <label>
             <span>Name</span>
-            <input
-              value={siteSettings.hero.name}
-              onChange={(e) => updateSiteSettings('hero', { name: e.target.value })}
-              placeholder="mabel"
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('hero', 'name')}
+                onChange={(e) => handleFieldChange('hero', 'name', e.target.value)}
+                placeholder="mabel"
+              />
+              <button onClick={() => handleSave('hero', 'name')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
           <label>
             <span>Subtitle</span>
-            <input
-              value={siteSettings.hero.subtitle}
-              onChange={(e) => updateSiteSettings('hero', { subtitle: e.target.value })}
-              placeholder="16. messing around..."
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('hero', 'subtitle')}
+                onChange={(e) => handleFieldChange('hero', 'subtitle', e.target.value)}
+                placeholder="16. messing around..."
+              />
+              <button onClick={() => handleSave('hero', 'subtitle')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
         </div>
       </div>
@@ -563,20 +683,29 @@ function SiteSettingsManager({ siteSettings, updateSiteSettings }) {
         <div className="settings-fields">
           <label>
             <span>Title</span>
-            <input
-              value={siteSettings.videos.title}
-              onChange={(e) => updateSiteSettings('videos', { title: e.target.value })}
-              placeholder="videos"
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('videos', 'title')}
+                onChange={(e) => handleFieldChange('videos', 'title', e.target.value)}
+                placeholder="videos"
+              />
+              <button onClick={() => handleSave('videos', 'title')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
           <label>
             <span>Intro Text</span>
-            <textarea
-              value={siteSettings.videos.intro}
-              onChange={(e) => updateSiteSettings('videos', { intro: e.target.value })}
-              placeholder="Page introduction..."
-              rows={2}
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('videos', 'intro')}
+                onChange={(e) => handleFieldChange('videos', 'intro', e.target.value)}
+                placeholder="Page introduction..."
+              />
+              <button onClick={() => handleSave('videos', 'intro')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
         </div>
       </div>
@@ -586,20 +715,29 @@ function SiteSettingsManager({ siteSettings, updateSiteSettings }) {
         <div className="settings-fields">
           <label>
             <span>Title</span>
-            <input
-              value={siteSettings.designs.title}
-              onChange={(e) => updateSiteSettings('designs', { title: e.target.value })}
-              placeholder="designs"
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('designs', 'title')}
+                onChange={(e) => handleFieldChange('designs', 'title', e.target.value)}
+                placeholder="designs"
+              />
+              <button onClick={() => handleSave('designs', 'title')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
           <label>
             <span>Intro Text</span>
-            <textarea
-              value={siteSettings.designs.intro}
-              onChange={(e) => updateSiteSettings('designs', { intro: e.target.value })}
-              placeholder="Page introduction..."
-              rows={2}
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('designs', 'intro')}
+                onChange={(e) => handleFieldChange('designs', 'intro', e.target.value)}
+                placeholder="Page introduction..."
+              />
+              <button onClick={() => handleSave('designs', 'intro')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
         </div>
       </div>
@@ -609,28 +747,42 @@ function SiteSettingsManager({ siteSettings, updateSiteSettings }) {
         <div className="settings-fields">
           <label>
             <span>Title</span>
-            <input
-              value={siteSettings.contact.title}
-              onChange={(e) => updateSiteSettings('contact', { title: e.target.value })}
-              placeholder="contact"
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('contact', 'title')}
+                onChange={(e) => handleFieldChange('contact', 'title', e.target.value)}
+                placeholder="contact"
+              />
+              <button onClick={() => handleSave('contact', 'title')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
           <label>
             <span>Intro Text</span>
-            <textarea
-              value={siteSettings.contact.intro}
-              onChange={(e) => updateSiteSettings('contact', { intro: e.target.value })}
-              placeholder="Page introduction..."
-              rows={2}
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('contact', 'intro')}
+                onChange={(e) => handleFieldChange('contact', 'intro', e.target.value)}
+                placeholder="Page introduction..."
+              />
+              <button onClick={() => handleSave('contact', 'intro')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
           <label>
             <span>Location</span>
-            <input
-              value={siteSettings.contact.location || ''}
-              onChange={(e) => updateSiteSettings('contact', { location: e.target.value })}
-              placeholder="San Diego, CA"
-            />
+            <div className="settings-field-row">
+              <input
+                value={getValue('contact', 'location')}
+                onChange={(e) => handleFieldChange('contact', 'location', e.target.value)}
+                placeholder="San Diego, CA"
+              />
+              <button onClick={() => handleSave('contact', 'location')} disabled={saving} className="btn-save-field">
+                Save
+              </button>
+            </div>
           </label>
         </div>
       </div>
