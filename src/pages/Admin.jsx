@@ -303,10 +303,12 @@ function Admin() {
   )
 }
 
-function FileUpload({ onUpload, accept, label, githubToken }) {
+function FileUpload({ onUpload, accept, label, githubToken, inputId }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const fileInputRef = useRef(null)
+  const idRef = useRef(inputId || `file-${label}-${Math.random().toString(36).substr(2, 9)}`)
+  const uniqueId = idRef.current
 
   const handleFileSelect = async (e) => {
     const file = e.target.files?.[0]
@@ -341,9 +343,9 @@ function FileUpload({ onUpload, accept, label, githubToken }) {
         accept={accept}
         onChange={handleFileSelect}
         disabled={uploading}
-        id={`file-${label}`}
+        id={uniqueId}
       />
-      <label htmlFor={`file-${label}`} className={`file-upload-btn ${uploading ? 'uploading' : ''}`}>
+      <label htmlFor={uniqueId} className={`file-upload-btn ${uploading ? 'uploading' : ''}`}>
         {uploading ? 'Uploading...' : label}
       </label>
       {error && <span className="file-upload-error">{error}</span>}
@@ -507,6 +509,7 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
             accept="image/*"
             label="Upload"
             githubToken={githubToken}
+            inputId="file-design-add"
             onUpload={(url) => setNewDesign({ ...newDesign, image: url })}
           />
         </div>
@@ -545,6 +548,7 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
                     accept="image/*"
                     label="Upload"
                     githubToken={githubToken}
+                    inputId={`file-design-edit-${design.id}`}
                     onUpload={(url) => {
                       setEditing(prev => {
                         const updated = { ...prev, image: url }
@@ -690,6 +694,7 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
             accept="image/*"
             label="Upload"
             githubToken={githubToken}
+            inputId="file-badge-add"
             onUpload={(url) => setNewBadge({ ...newBadge, image: url })}
           />
         </div>
@@ -723,6 +728,7 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
                     accept="image/*"
                     label="Upload"
                     githubToken={githubToken}
+                    inputId={`file-badge-edit-${badge.id}`}
                     onUpload={(url) => {
                       setEditing(prev => {
                         const updated = { ...prev, image: url }
