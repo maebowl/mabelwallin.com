@@ -54,13 +54,6 @@ const defaultData = {
   ],
   designs: [
       {
-          "id": 5,
-          "title": "Design Project 5",
-          "category": "Poster Design",
-          "description": "Description of your fifth design project",
-          "image": "https://via.placeholder.com/800x600/4c1d95/ffffff?text=Design+5"
-      },
-      {
           "id": 6,
           "title": "Design Project 6",
           "category": "Digital Art",
