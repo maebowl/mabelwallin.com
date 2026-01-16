@@ -527,18 +527,18 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
               <>
                 <input
                   value={editing.title}
-                  onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+                  onChange={(e) => setEditing(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Title"
                 />
                 <input
                   value={editing.category || ''}
-                  onChange={(e) => setEditing({ ...editing, category: e.target.value })}
+                  onChange={(e) => setEditing(prev => ({ ...prev, category: e.target.value }))}
                   placeholder="Category"
                 />
                 <div className="media-input-group">
                   <input
                     value={editing.image || ''}
-                    onChange={(e) => setEditing({ ...editing, image: e.target.value })}
+                    onChange={(e) => setEditing(prev => ({ ...prev, image: e.target.value }))}
                     placeholder="Image URL"
                   />
                   <FileUpload
@@ -546,14 +546,17 @@ function DesignsManager({ designs, addDesign, updateDesign, deleteDesign, github
                     label="Upload"
                     githubToken={githubToken}
                     onUpload={(url) => {
-                      setEditing({ ...editing, image: url })
-                      handleUpdate(design.id, { image: url })
+                      setEditing(prev => {
+                        const updated = { ...prev, image: url }
+                        updateDesign(design.id, updated)
+                        return null
+                      })
                     }}
                   />
                 </div>
                 <input
                   value={editing.description || ''}
-                  onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                  onChange={(e) => setEditing(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Description"
                 />
                 <div className="item-actions">
@@ -713,7 +716,7 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
                 <div className="media-input-group">
                   <input
                     value={editing.image}
-                    onChange={(e) => setEditing({ ...editing, image: e.target.value })}
+                    onChange={(e) => setEditing(prev => ({ ...prev, image: e.target.value }))}
                     placeholder="Image URL"
                   />
                   <FileUpload
@@ -721,19 +724,22 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
                     label="Upload"
                     githubToken={githubToken}
                     onUpload={(url) => {
-                      setEditing({ ...editing, image: url })
-                      handleUpdate(badge.id, { image: url })
+                      setEditing(prev => {
+                        const updated = { ...prev, image: url }
+                        updateBadge(badge.id, updated)
+                        return null
+                      })
                     }}
                   />
                 </div>
                 <input
                   value={editing.url || ''}
-                  onChange={(e) => setEditing({ ...editing, url: e.target.value })}
+                  onChange={(e) => setEditing(prev => ({ ...prev, url: e.target.value }))}
                   placeholder="Link URL"
                 />
                 <input
                   value={editing.alt || ''}
-                  onChange={(e) => setEditing({ ...editing, alt: e.target.value })}
+                  onChange={(e) => setEditing(prev => ({ ...prev, alt: e.target.value }))}
                   placeholder="Alt text"
                 />
                 <div className="item-actions">
