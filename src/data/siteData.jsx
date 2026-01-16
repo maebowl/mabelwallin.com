@@ -2,119 +2,112 @@ import { createContext, useContext, useState } from 'react'
 
 const defaultData = {
   siteSettings: {
-    hero: {
-      greeting: "hi, i'm",
-      name: "mabel",
-      subtitle: "16. messing around and making videos about it"
-    },
-    videos: {
-      title: "videos",
-      intro: "stuff i've filmed and edited. still learning but having fun with it"
-    },
-    designs: {
-      title: "designs",
-      intro: "photoshop stuff from class and random projects when i'm bored"
-    },
-    contact: {
-      title: "contact",
-      intro: "wanna chat? here's where to find me",
-      email: "mabel@mabelwallin.com",
-      location: "San Diego, CA"
-    }
+      "hero": {
+          "greeting": "hi, i'm",
+          "name": "mabel",
+          "subtitle": "16. messing around and making videos about it"
+      },
+      "videos": {
+          "title": "videos",
+          "intro": "stuff i've filmed and edited. still learning but having fun with it"
+      },
+      "designs": {
+          "title": "designs",
+          "intro": "photoshop stuff from class and random projects when i'm bored"
+      },
+      "contact": {
+          "title": "contact",
+          "intro": "wanna chat? here's where to find me",
+          "email": "mabel@mabelwallin.com",
+          "location": "San Diego, CA"
+      }
   },
   videos: [
-    {
-      id: 1,
-      title: 'yosemite vlog',
-      description: 'sequel coming soon',
-      videoId: 'Ttutmwz4BtE',
-      isVertical: false,
-    },
-    {
-      id: 2,
-      title: 'Mabel and Bryce go fishing',
-      description: '',
-      videoId: 'hJfbYTFYudE',
-      isVertical: true,
-    },
-    {
-      id: 3,
-      title: "Mabel's Train Adventure",
-      description: '',
-      videoId: 'cJezhteJgT8',
-      isVertical: true,
-    },
-    {
-      id: 4,
-      title: 'The Abandoned Pub',
-      description: '',
-      videoId: '_RmdBZYhu4A',
-      isVertical: true,
-    },
+      {
+          "id": 1,
+          "title": "yosemite vlog",
+          "description": "sequel coming soon",
+          "videoId": "Ttutmwz4BtE",
+          "isVertical": false
+      },
+      {
+          "id": 2,
+          "title": "Mabel and Bryce go fishing",
+          "description": "",
+          "videoId": "hJfbYTFYudE",
+          "isVertical": true
+      },
+      {
+          "id": 3,
+          "title": "Mabel's Train Adventure",
+          "description": "",
+          "videoId": "cJezhteJgT8",
+          "isVertical": true
+      },
+      {
+          "id": 4,
+          "title": "The Abandoned Pub",
+          "description": "",
+          "videoId": "_RmdBZYhu4A",
+          "isVertical": true
+      }
   ],
   designs: [
-    {
-      id: 1,
-      title: 'Design Project 1',
-      category: 'Branding',
-      description: 'Description of your first design project',
-      image: 'https://via.placeholder.com/800x600/8b5cf6/ffffff?text=Design+1',
-    },
-    {
-      id: 2,
-      title: 'Design Project 2',
-      category: 'Typography',
-      description: 'Description of your second design project',
-      image: 'https://via.placeholder.com/800x600/7c3aed/ffffff?text=Design+2',
-    },
-    {
-      id: 3,
-      title: 'Design Project 3',
-      category: 'Layout',
-      description: 'Description of your third design project',
-      image: 'https://via.placeholder.com/800x600/6d28d9/ffffff?text=Design+3',
-    },
-    {
-      id: 4,
-      title: 'Design Project 4',
-      category: 'Illustration',
-      description: 'Description of your fourth design project',
-      image: 'https://via.placeholder.com/800x600/5b21b6/ffffff?text=Design+4',
-    },
-    {
-      id: 5,
-      title: 'Design Project 5',
-      category: 'Poster Design',
-      description: 'Description of your fifth design project',
-      image: 'https://via.placeholder.com/800x600/4c1d95/ffffff?text=Design+5',
-    },
-    {
-      id: 6,
-      title: 'Design Project 6',
-      category: 'Digital Art',
-      description: 'Description of your sixth design project',
-      image: 'https://via.placeholder.com/800x600/3b0764/ffffff?text=Design+6',
-    },
+      {
+          "id": 2,
+          "title": "Design Project 2",
+          "category": "Typography",
+          "description": "Description of your second design project",
+          "image": "https://via.placeholder.com/800x600/7c3aed/ffffff?text=Design+2"
+      },
+      {
+          "id": 3,
+          "title": "Design Project 3",
+          "category": "Layout",
+          "description": "Description of your third design project",
+          "image": "https://via.placeholder.com/800x600/6d28d9/ffffff?text=Design+3"
+      },
+      {
+          "id": 4,
+          "title": "Design Project 4",
+          "category": "Illustration",
+          "description": "Description of your fourth design project",
+          "image": "https://via.placeholder.com/800x600/5b21b6/ffffff?text=Design+4"
+      },
+      {
+          "id": 5,
+          "title": "Design Project 5",
+          "category": "Poster Design",
+          "description": "Description of your fifth design project",
+          "image": "https://via.placeholder.com/800x600/4c1d95/ffffff?text=Design+5"
+      },
+      {
+          "id": 6,
+          "title": "Design Project 6",
+          "category": "Digital Art",
+          "description": "Description of your sixth design project",
+          "image": "https://via.placeholder.com/800x600/3b0764/ffffff?text=Design+6"
+      }
   ],
   socials: [
-    {
-      id: 'email',
-      name: 'Email',
-      handle: 'mabel@mabelwallin.com',
-      url: 'mailto:mabel@mabelwallin.com',
-    },
-    {
-      id: 'youtube',
-      name: 'YouTube',
-      handle: '@MabelWallin',
-      url: 'https://youtube.com/@MabelWallin',
-    },
-    {
-      id: 'tiktok',
-      name: 'TikTok',
-      handle: '@maebowl',
-      url: 'https://tiktok.com/@maebowl',
-    },
+      {
+          "id": "email",
+          "name": "Email",
+          "handle": "mabel@mabelwallin.com",
+          "url": "mailto:mabel@mabelwallin.com"
+      },
+      {
+          "id": "youtube",
+          "name": "YouTube",
+          "handle": "@MabelWallin",
+          "url": "https://youtube.com/@MabelWallin"
+      },
+      {
+          "id": "tiktok",
+          "name": "TikTok",
+          "handle": "@maebowl",
+          "url": "https://tiktok.com/@maebowl"
+      }
   ],
 }
 
