@@ -125,6 +125,12 @@ const defaultData = {
                   "id": 3
               }
           ]
+      },
+      {
+          "name": "Resurrections",
+          "color": "pink",
+          "id": 2,
+          "songs": []
       }
   ],
 }
