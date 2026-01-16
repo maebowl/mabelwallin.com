@@ -9,7 +9,7 @@ const defaultData = {
       },
       "videos": {
           "title": "videos",
-          "intro": "stuff i've filmed and edited. still learning but having fun with it"
+          "intro": "stuff i've filmed and edited."
       },
       "designs": {
           "title": "designs",
