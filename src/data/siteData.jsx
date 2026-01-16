@@ -106,6 +106,12 @@ const defaultData = {
           "artist": "Jenny O.",
           "url": "/uploads/1768600647889-SpotiDown.App_-_Well_OK_Honey_-_Jenny_O..mp3",
           "id": 1
+      },
+      {
+          "title": "Amoeba",
+          "artist": "Clairo",
+          "url": "/uploads/1768601122861-SpotiDown.App_-_Amoeba_-_Recorded_At_Electric_Lady_Studios_-_Clairo.mp3",
+          "id": 2
       }
   ],
 }
