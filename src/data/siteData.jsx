@@ -79,6 +79,12 @@ const defaultData = {
           "image": "/mabelwallin-com88x31.png",
           "url": "https://mabelwallin.com",
           "alt": "mabelwallin.com"
+      },
+      {
+          "image": "/uploads/1768557537415-IMG_1921.png",
+          "url": "https://www.diyhrt.wiki",
+          "alt": "just in case",
+          "id": 2
       }
   ],
 }
@@ -87,22 +93,6 @@ const SiteDataContext = createContext()
 
 export function SiteDataProvider({ children }) {
   const [data, setData] = useState(defaultData)
-
-  const addBadge = (badge) => {
-    const id = Math.max(0, ...data.badges.map(b => b.id)) + 1
-    setData(prev => ({ ...prev, badges: [...prev.badges, { ...badge, id }] }))
-  }
-
-  const updateBadge = (id, updates) => {
-    setData(prev => ({
-      ...prev,
-      badges: prev.badges.map(b => b.id === id ? { ...b, ...updates } : b)
-    }))
-  }
-
-  const deleteBadge = (id) => {
-    setData(prev => ({ ...prev, badges: prev.badges.filter(b => b.id !== id) }))
-  }
 
   const addVideo = (video) => {
     const id = Math.max(0, ...data.videos.map(v => v.id)) + 1
@@ -141,6 +131,22 @@ export function SiteDataProvider({ children }) {
       ...prev,
       socials: prev.socials.map(s => s.id === id ? { ...s, ...updates } : s)
     }))
+  }
+
+  const addBadge = (badge) => {
+    const id = Math.max(0, ...data.badges.map(b => b.id)) + 1
+    setData(prev => ({ ...prev, badges: [...prev.badges, { ...badge, id }] }))
+  }
+
+  const updateBadge = (id, updates) => {
+    setData(prev => ({
+      ...prev,
+      badges: prev.badges.map(b => b.id === id ? { ...b, ...updates } : b)
+    }))
+  }
+
+  const deleteBadge = (id) => {
+    setData(prev => ({ ...prev, badges: prev.badges.filter(b => b.id !== id) }))
   }
 
   const updateSiteSettings = (section, updates) => {
