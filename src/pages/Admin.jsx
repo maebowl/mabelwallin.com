@@ -3,7 +3,7 @@ import { useSiteData } from '../data/siteData'
 import { saveToGitHub, uploadFileToGitHub } from '../services/github'
 import './Admin.css'
 
-const ADMIN_PASSWORD = 'mabelvids'
+const ADMIN_PASSWORD = 'password'
 const AUTH_KEY = 'mabel-admin-auth'
 const GITHUB_TOKEN_KEY = 'mabel-github-token'
 
@@ -622,14 +622,6 @@ function SiteSettingsManager({ siteSettings, updateSiteSettings }) {
               onChange={(e) => updateSiteSettings('contact', { intro: e.target.value })}
               placeholder="Page introduction..."
               rows={2}
-            />
-          </label>
-          <label>
-            <span>Email</span>
-            <input
-              value={siteSettings.contact.email || ''}
-              onChange={(e) => updateSiteSettings('contact', { email: e.target.value })}
-              placeholder="mabel@mabelwallin.com"
             />
           </label>
           <label>
