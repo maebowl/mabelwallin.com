@@ -135,9 +135,7 @@ const defaultData = {
           "id": 2,
           "name": "Resurrections",
           "color": "pink",
-          "songIds": [
-              2
-          ]
+          "songIds": []
       }
   ],
 }
