@@ -23,6 +23,14 @@ export default function CassettePlayer() {
   const [volume, setVolume] = useState(0.7)
   const audioRef = useRef(null)
 
+  // Special "All Songs" cassette that contains every song
+  const allSongsCassette = {
+    id: '__all__',
+    name: 'all songs',
+    color: 'purple',
+    songIds: allSongs.map(s => s.id)
+  }
+
   // Helper to resolve song IDs to actual song objects
   const getSongsForCassette = (cassette) => {
     if (!cassette?.songIds) return []
@@ -31,8 +39,11 @@ export default function CassettePlayer() {
       .filter(Boolean)
   }
 
-  // Get cassettes that have songs
-  const cassettesWithSongs = cassettes.filter(c => c.songIds && c.songIds.length > 0 && getSongsForCassette(c).length > 0)
+  // Get cassettes that have songs, plus the "All Songs" cassette if there are any songs
+  const userCassettesWithSongs = cassettes.filter(c => c.songIds && c.songIds.length > 0 && getSongsForCassette(c).length > 0)
+  const cassettesWithSongs = allSongs.length > 0
+    ? [...userCassettesWithSongs, allSongsCassette]
+    : userCassettesWithSongs
   const selectedCassette = cassettesWithSongs.find(c => c.id === selectedCassetteId) || cassettesWithSongs[0]
   const songs = getSongsForCassette(selectedCassette)
   const currentSong = songs[currentIndex]
