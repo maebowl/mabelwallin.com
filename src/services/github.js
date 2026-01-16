@@ -143,7 +143,7 @@ export async function uploadFileToGitHub(file, token) {
 }
 
 function generateSiteDataFile(data) {
-  const { siteSettings, videos, designs, socials, badges } = data
+  const { siteSettings, videos, designs, socials, badges, music } = data
 
   // Helper to indent JSON properly
   const indent = (json) => {
@@ -159,6 +159,7 @@ const defaultData = {
   designs: ${indent(JSON.stringify(designs, null, 4))},
   socials: ${indent(JSON.stringify(socials, null, 4))},
   badges: ${indent(JSON.stringify(badges, null, 4))},
+  music: ${indent(JSON.stringify(music || [], null, 4))},
 }
 
 const SiteDataContext = createContext()
@@ -225,6 +226,26 @@ export function SiteDataProvider({ children }) {
     setData(prev => ({ ...prev, badges: newBadges }))
   }
 
+  const addSong = (song) => {
+    const id = Math.max(0, ...data.music.map(s => s.id)) + 1
+    setData(prev => ({ ...prev, music: [...prev.music, { ...song, id }] }))
+  }
+
+  const updateSong = (id, updates) => {
+    setData(prev => ({
+      ...prev,
+      music: prev.music.map(s => s.id === id ? { ...s, ...updates } : s)
+    }))
+  }
+
+  const deleteSong = (id) => {
+    setData(prev => ({ ...prev, music: prev.music.filter(s => s.id !== id) }))
+  }
+
+  const reorderMusic = (newMusic) => {
+    setData(prev => ({ ...prev, music: newMusic }))
+  }
+
   const updateSiteSettings = (section, updates) => {
     setData(prev => ({
       ...prev,
@@ -253,6 +274,10 @@ export function SiteDataProvider({ children }) {
       updateBadge,
       deleteBadge,
       reorderBadges,
+      addSong,
+      updateSong,
+      deleteSong,
+      reorderMusic,
       updateSiteSettings,
       resetToDefaults,
     }}>

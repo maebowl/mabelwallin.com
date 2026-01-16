@@ -18,12 +18,13 @@ function Admin() {
   const [saveStatus, setSaveStatus] = useState('')
 
   const {
-    siteSettings, videos, designs, socials, badges,
+    siteSettings, videos, designs, socials, badges, music,
     updateSiteSettings,
     addVideo, updateVideo, deleteVideo,
     addDesign, updateDesign, deleteDesign,
     updateSocial,
     addBadge, updateBadge, deleteBadge, reorderBadges,
+    addSong, updateSong, deleteSong, reorderMusic,
     resetToDefaults
   } = useSiteData()
 
@@ -92,68 +93,92 @@ function Admin() {
     const id = Math.max(0, ...videos.map(v => v.id)) + 1
     const newVideos = [...videos, { ...video, id }]
     addVideo(video)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, music })
   }
 
   const handleUpdateVideo = async (id, updates) => {
     const newVideos = videos.map(v => v.id === id ? { ...v, ...updates } : v)
     updateVideo(id, updates)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, music })
   }
 
   const handleDeleteVideo = async (id) => {
     const newVideos = videos.filter(v => v.id !== id)
     deleteVideo(id)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges })
+    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, music })
   }
 
   const handleAddDesign = async (design) => {
     const id = Math.max(0, ...designs.map(d => d.id)) + 1
     const newDesigns = [...designs, { ...design, id }]
     addDesign(design)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, music })
   }
 
   const handleUpdateDesign = async (id, updates) => {
     const newDesigns = designs.map(d => d.id === id ? { ...d, ...updates } : d)
     updateDesign(id, updates)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, music })
   }
 
   const handleDeleteDesign = async (id) => {
     const newDesigns = designs.filter(d => d.id !== id)
     deleteDesign(id)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges })
+    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, music })
   }
 
   const handleUpdateSocial = async (id, updates) => {
     const newSocials = socials.map(s => s.id === id ? { ...s, ...updates } : s)
     updateSocial(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials: newSocials, badges })
+    await autoSave({ siteSettings, videos, designs, socials: newSocials, badges, music })
   }
 
   const handleAddBadge = async (badge) => {
     const id = Math.max(0, ...badges.map(b => b.id)) + 1
     const newBadges = [...badges, { ...badge, id }]
     addBadge(badge)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
   }
 
   const handleUpdateBadge = async (id, updates) => {
     const newBadges = badges.map(b => b.id === id ? { ...b, ...updates } : b)
     updateBadge(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
   }
 
   const handleDeleteBadge = async (id) => {
     const newBadges = badges.filter(b => b.id !== id)
     deleteBadge(id)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
   }
 
   const handleReorderBadges = async (newBadges) => {
     reorderBadges(newBadges)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges })
+    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, music })
+  }
+
+  const handleAddSong = async (song) => {
+    const id = Math.max(0, ...music.map(s => s.id)) + 1
+    const newMusic = [...music, { ...song, id }]
+    addSong(song)
+    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  }
+
+  const handleUpdateSong = async (id, updates) => {
+    const newMusic = music.map(s => s.id === id ? { ...s, ...updates } : s)
+    updateSong(id, updates)
+    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  }
+
+  const handleDeleteSong = async (id) => {
+    const newMusic = music.filter(s => s.id !== id)
+    deleteSong(id)
+    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
+  }
+
+  const handleReorderMusic = async (newMusic) => {
+    reorderMusic(newMusic)
+    await autoSave({ siteSettings, videos, designs, socials, badges, music: newMusic })
   }
 
   const handleUpdateSiteSettings = async (section, updates) => {
@@ -162,7 +187,7 @@ function Admin() {
       [section]: { ...siteSettings[section], ...updates }
     }
     updateSiteSettings(section, updates)
-    await autoSave({ siteSettings: newSettings, videos, designs, socials, badges })
+    await autoSave({ siteSettings: newSettings, videos, designs, socials, badges, music })
   }
 
   if (!isAuthenticated) {
@@ -245,6 +270,12 @@ function Admin() {
             Badges
           </button>
           <button
+            className={`tab ${activeTab === 'music' ? 'active' : ''}`}
+            onClick={() => setActiveTab('music')}
+          >
+            Music
+          </button>
+          <button
             className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
@@ -286,6 +317,17 @@ function Admin() {
               updateBadge={handleUpdateBadge}
               deleteBadge={handleDeleteBadge}
               reorderBadges={handleReorderBadges}
+              githubToken={githubToken}
+              saving={saving}
+            />
+          )}
+          {activeTab === 'music' && (
+            <MusicManager
+              music={music}
+              addSong={handleAddSong}
+              updateSong={handleUpdateSong}
+              deleteSong={handleDeleteSong}
+              reorderMusic={handleReorderMusic}
               githubToken={githubToken}
               saving={saving}
             />
@@ -783,6 +825,144 @@ function BadgesManager({ badges, addBadge, updateBadge, deleteBadge, reorderBadg
                   </button>
                   <button onClick={() => setEditing({ ...badge })}>Edit</button>
                   <button onClick={() => deleteBadge(badge.id)} className="btn-danger" disabled={saving}>
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function MusicManager({ music, addSong, updateSong, deleteSong, reorderMusic, githubToken, saving }) {
+  const [editing, setEditing] = useState(null)
+  const [newSong, setNewSong] = useState({ title: '', artist: '', url: '' })
+
+  const handleAdd = () => {
+    if (!newSong.title || !newSong.url) return
+    addSong(newSong)
+    setNewSong({ title: '', artist: '', url: '' })
+  }
+
+  const handleUpdate = (id) => {
+    updateSong(id, editing)
+    setEditing(null)
+  }
+
+  const moveSong = (index, direction) => {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= music.length) return
+    const newMusic = [...music]
+    const [moved] = newMusic.splice(index, 1)
+    newMusic.splice(newIndex, 0, moved)
+    reorderMusic(newMusic)
+  }
+
+  return (
+    <div className="manager">
+      <h2>Music</h2>
+      <p className="manager-note">Add songs for the cassette player. Upload MP3 files or paste audio URLs.</p>
+
+      <div className="add-form">
+        <h3>Add New Song</h3>
+        <input
+          placeholder="Song title"
+          value={newSong.title}
+          onChange={(e) => setNewSong({ ...newSong, title: e.target.value })}
+        />
+        <input
+          placeholder="Artist"
+          value={newSong.artist}
+          onChange={(e) => setNewSong({ ...newSong, artist: e.target.value })}
+        />
+        <div className="media-input-group">
+          <input
+            placeholder="Audio URL (MP3, etc.)"
+            value={newSong.url}
+            onChange={(e) => setNewSong({ ...newSong, url: e.target.value })}
+          />
+          <FileUpload
+            accept="audio/*"
+            label="Upload"
+            githubToken={githubToken}
+            inputId="file-music-add"
+            onUpload={(url) => setNewSong({ ...newSong, url })}
+          />
+        </div>
+        <button onClick={handleAdd} disabled={saving}>
+          {saving ? 'Saving...' : 'Add Song'}
+        </button>
+      </div>
+
+      <div className="items-list">
+        {music.map((song, index) => (
+          <div key={song.id} className="item">
+            {editing?.id === song.id ? (
+              <>
+                <input
+                  value={editing.title}
+                  onChange={(e) => setEditing(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Song title"
+                />
+                <input
+                  value={editing.artist || ''}
+                  onChange={(e) => setEditing(prev => ({ ...prev, artist: e.target.value }))}
+                  placeholder="Artist"
+                />
+                <div className="media-input-group">
+                  <input
+                    value={editing.url}
+                    onChange={(e) => setEditing(prev => ({ ...prev, url: e.target.value }))}
+                    placeholder="Audio URL"
+                  />
+                  <FileUpload
+                    accept="audio/*"
+                    label="Upload"
+                    githubToken={githubToken}
+                    inputId={`file-music-edit-${song.id}`}
+                    onUpload={(url) => {
+                      setEditing(prev => {
+                        const updated = { ...prev, url }
+                        updateSong(song.id, updated)
+                        return null
+                      })
+                    }}
+                  />
+                </div>
+                <div className="item-actions">
+                  <button onClick={() => handleUpdate(song.id)} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </button>
+                  <button onClick={() => setEditing(null)}>Cancel</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="item-info">
+                  <strong>{song.title}</strong>
+                  <span className="item-meta">{song.artist || 'Unknown artist'}</span>
+                  <span className="item-meta item-url">{song.url}</span>
+                </div>
+                <div className="item-actions">
+                  <button
+                    onClick={() => moveSong(index, -1)}
+                    disabled={saving || index === 0}
+                    title="Move up"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    onClick={() => moveSong(index, 1)}
+                    disabled={saving || index === music.length - 1}
+                    title="Move down"
+                  >
+                    ↓
+                  </button>
+                  <button onClick={() => setEditing({ ...song })}>Edit</button>
+                  <button onClick={() => deleteSong(song.id)} className="btn-danger" disabled={saving}>
                     Delete
                   </button>
                 </div>

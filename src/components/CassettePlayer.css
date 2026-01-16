@@ -1,0 +1,453 @@
+/* Floating toggle button */
+.cassette-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+  border: 2px solid #fbbf24;
+  border-radius: 12px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.cassette-toggle:hover {
+  transform: scale(1.05);
+  border-color: #f59e0b;
+}
+
+.cassette-icon {
+  width: 36px;
+  height: 24px;
+}
+
+.cassette-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #404040 0%, #2d2d2d 100%);
+  border-radius: 4px;
+  position: relative;
+  padding: 4px;
+}
+
+.cassette-window {
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  border-radius: 2px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2px;
+}
+
+.cassette-reel {
+  width: 10px;
+  height: 10px;
+  background: #fbbf24;
+  border-radius: 50%;
+  position: relative;
+}
+
+.cassette-icon.playing .cassette-reel {
+  animation: spin 1s linear infinite;
+}
+
+/* Player panel */
+.cassette-player {
+  position: fixed;
+  bottom: 5.5rem;
+  right: 1.5rem;
+  width: 280px;
+  background: linear-gradient(180deg, #3d3d3d 0%, #252525 100%);
+  border: 3px solid #555;
+  border-radius: 16px;
+  padding: 1rem;
+  z-index: 999;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.cassette-player.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cassette-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.cassette-label {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cassette-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.cassette-close:hover {
+  color: #fff;
+}
+
+/* Cassette tape visual */
+.cassette-tape {
+  background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.tape-label {
+  background: linear-gradient(180deg, #f5f5dc 0%, #e8e8c8 100%);
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.tape-title {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tape-artist {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.625rem;
+  color: #555;
+  margin-top: 2px;
+}
+
+.tape-reels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.tape-reel {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+  border: 3px solid #444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.tape-reel::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    #333 0deg 30deg,
+    #222 30deg 60deg
+  );
+}
+
+.tape-reel.spinning::before {
+  animation: spin 0.5s linear infinite;
+}
+
+.reel-center {
+  width: 16px;
+  height: 16px;
+  background: #fbbf24;
+  border-radius: 50%;
+  z-index: 1;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.tape-window {
+  flex: 1;
+  height: 24px;
+  background: linear-gradient(180deg, #8b4513 0%, #654321 50%, #8b4513 100%);
+  margin: 0 0.5rem;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tape-window::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Progress bar */
+.cassette-progress {
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  border-radius: 4px;
+  transition: width 0.1s linear;
+}
+
+.cassette-time {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier New', monospace;
+  font-size: 0.625rem;
+  color: #888;
+  margin-bottom: 0.75rem;
+}
+
+/* Controls */
+.cassette-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.control-btn {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(180deg, #444 0%, #2d2d2d 100%);
+  border: 2px solid #555;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.control-btn:hover {
+  background: linear-gradient(180deg, #555 0%, #3d3d3d 100%);
+  border-color: #fbbf24;
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.play-btn {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  border-color: #f59e0b;
+}
+
+.play-btn:hover {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  border-color: #fbbf24;
+}
+
+.control-icon {
+  font-size: 1rem;
+  color: #fff;
+  line-height: 1;
+}
+
+.play-btn .control-icon {
+  color: #1a1a1a;
+  font-size: 1.25rem;
+}
+
+/* Volume */
+.cassette-volume {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0 0.25rem;
+}
+
+.volume-icon {
+  font-size: 0.875rem;
+}
+
+.volume-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #1a1a1a;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #fbbf24;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #fbbf24;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* Playlist */
+.cassette-playlist {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.playlist-header {
+  font-family: 'Courier New', monospace;
+  font-size: 0.625rem;
+  font-weight: bold;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.5rem;
+  border-bottom: 1px solid #333;
+}
+
+.playlist-tracks {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.playlist-tracks::-webkit-scrollbar {
+  width: 4px;
+}
+
+.playlist-tracks::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.playlist-tracks::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 2px;
+}
+
+.playlist-track {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.playlist-track:hover {
+  background: #2d2d2d;
+}
+
+.playlist-track.active {
+  background: #2d2d2d;
+}
+
+.playlist-track.active .track-title {
+  color: #fbbf24;
+}
+
+.track-number {
+  font-family: 'Courier New', monospace;
+  font-size: 0.625rem;
+  color: #666;
+  width: 1.25rem;
+}
+
+.track-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-title {
+  display: block;
+  font-size: 0.75rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  display: block;
+  font-size: 0.625rem;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .cassette-toggle {
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+
+  .cassette-player {
+    right: 0.5rem;
+    left: 0.5rem;
+    bottom: 4.5rem;
+    width: auto;
+    max-width: 320px;
+  }
+}

@@ -100,6 +100,7 @@ const defaultData = {
           "id": 4
       }
   ],
+  music: [],
 }
 
 const SiteDataContext = createContext()
@@ -166,6 +167,26 @@ export function SiteDataProvider({ children }) {
     setData(prev => ({ ...prev, badges: newBadges }))
   }
 
+  const addSong = (song) => {
+    const id = Math.max(0, ...data.music.map(s => s.id)) + 1
+    setData(prev => ({ ...prev, music: [...prev.music, { ...song, id }] }))
+  }
+
+  const updateSong = (id, updates) => {
+    setData(prev => ({
+      ...prev,
+      music: prev.music.map(s => s.id === id ? { ...s, ...updates } : s)
+    }))
+  }
+
+  const deleteSong = (id) => {
+    setData(prev => ({ ...prev, music: prev.music.filter(s => s.id !== id) }))
+  }
+
+  const reorderMusic = (newMusic) => {
+    setData(prev => ({ ...prev, music: newMusic }))
+  }
+
   const updateSiteSettings = (section, updates) => {
     setData(prev => ({
       ...prev,
@@ -194,6 +215,10 @@ export function SiteDataProvider({ children }) {
       updateBadge,
       deleteBadge,
       reorderBadges,
+      addSong,
+      updateSong,
+      deleteSong,
+      reorderMusic,
       updateSiteSettings,
       resetToDefaults,
     }}>
