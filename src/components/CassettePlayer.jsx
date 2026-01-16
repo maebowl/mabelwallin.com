@@ -12,7 +12,7 @@ const CASSETTE_COLORS = {
 }
 
 export default function CassettePlayer() {
-  const { cassettes } = useSiteData()
+  const { cassettes, songs: allSongs } = useSiteData()
   const [isOpen, setIsOpen] = useState(false)
   const [showSelector, setShowSelector] = useState(false)
   const [selectedCassetteId, setSelectedCassetteId] = useState(null)
@@ -23,10 +23,18 @@ export default function CassettePlayer() {
   const [volume, setVolume] = useState(0.7)
   const audioRef = useRef(null)
 
+  // Helper to resolve song IDs to actual song objects
+  const getSongsForCassette = (cassette) => {
+    if (!cassette?.songIds) return []
+    return cassette.songIds
+      .map(id => allSongs.find(s => s.id === id))
+      .filter(Boolean)
+  }
+
   // Get cassettes that have songs
-  const cassettesWithSongs = cassettes.filter(c => c.songs && c.songs.length > 0)
+  const cassettesWithSongs = cassettes.filter(c => c.songIds && c.songIds.length > 0 && getSongsForCassette(c).length > 0)
   const selectedCassette = cassettesWithSongs.find(c => c.id === selectedCassetteId) || cassettesWithSongs[0]
-  const songs = selectedCassette?.songs || []
+  const songs = getSongsForCassette(selectedCassette)
   const currentSong = songs[currentIndex]
   const cassetteColor = CASSETTE_COLORS[selectedCassette?.color] || CASSETTE_COLORS.amber
 
@@ -151,6 +159,7 @@ export default function CassettePlayer() {
           <div className="cassette-selector">
             {cassettesWithSongs.map((cassette) => {
               const color = CASSETTE_COLORS[cassette.color] || CASSETTE_COLORS.amber
+              const songCount = getSongsForCassette(cassette).length
               return (
                 <button
                   key={cassette.id}
@@ -159,7 +168,7 @@ export default function CassettePlayer() {
                 >
                   <div className="cassette-option-icon" style={{ background: color.primary }}></div>
                   <span className="cassette-option-name">{cassette.name}</span>
-                  <span className="cassette-option-count">{cassette.songs.length} songs</span>
+                  <span className="cassette-option-count">{songCount} songs</span>
                 </button>
               )
             })}

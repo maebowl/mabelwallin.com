@@ -359,6 +359,15 @@
   background: #7f1d1d !important;
 }
 
+.btn-warning {
+  background: #92400e !important;
+  color: white !important;
+}
+
+.btn-warning:hover {
+  background: #78350f !important;
+}
+
 .btn-primary {
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
@@ -663,6 +672,86 @@
   font-size: 0.9375rem;
   text-align: center;
   padding: 1rem;
+}
+
+/* Song picker styles */
+.existing-songs-picker {
+  margin: 1rem 0;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.picker-toggle {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: #2d2d2d;
+  color: #fbbf24;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.picker-toggle:hover {
+  background: #363636;
+}
+
+.song-picker-list {
+  background: #1a1a1a;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.song-picker-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.song-picker-item:last-child {
+  border-bottom: none;
+}
+
+.song-picker-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.song-picker-info strong {
+  display: block;
+  font-size: 0.875rem;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-picker-info span {
+  font-size: 0.75rem;
+  color: #737373;
+}
+
+.song-picker-item button {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #fbbf24;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 0.75rem;
+}
+
+.song-picker-item button:hover {
+  background: #f59e0b;
 }
 
 @media (max-width: 768px) {
