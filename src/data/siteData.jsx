@@ -136,6 +136,18 @@ const defaultData = {
           "artist": "Shakey Graves",
           "url": "/uploads/1768608737881-SpotiDown.App_-_Roll_The_Bones_-_Audiotree_Live_Version_-_Shakey_Graves.mp3",
           "id": 6
+      },
+      {
+          "title": "Broken Bones",
+          "artist": "Kaleo",
+          "url": "/uploads/1768609284713-SpotiDown.App_-_Broken_Bones_-_KALEO.mp3",
+          "id": 7
+      },
+      {
+          "title": "The Plank",
+          "artist": "The Devil Makes Three",
+          "url": "/uploads/1768609317197-SpotiDown.App_-_The_Plank_-_The_Devil_Makes_Three.mp3",
+          "id": 8
       }
   ],
   cassettes: [
@@ -163,7 +175,9 @@ const defaultData = {
           "id": 3,
           "songIds": [
               5,
-              6
+              6,
+              7,
+              8
           ]
       }
   ],
