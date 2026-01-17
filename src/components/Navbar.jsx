@@ -1,12 +1,51 @@
-import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [showCounter, setShowCounter] = useState(false);
+  const resetTimer = useRef(null);
+  const hideTimer = useRef(null);
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  useEffect(() => {
+    return () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
+  }, []);
+
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    setShowCounter(true);
+
+    // Clear existing timers
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+
+    // Hide counter after 1 second
+    hideTimer.current = setTimeout(() => setShowCounter(false), 1000);
+
+    // Reset counter after 2 seconds of no clicks
+    resetTimer.current = setTimeout(() => setClickCount(0), 2000);
+
+    if (newCount >= 10) {
+      setClickCount(0);
+      setShowCounter(false);
+      navigate('/admin');
+    } else if (newCount === 1) {
+      // Only navigate home on first click
+      navigate('/portfolio');
+    }
   };
 
   return (
@@ -14,9 +53,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/portfolio" className="flex items-center">
+            <a href="/portfolio" onClick={handleHomeClick} className="flex items-center relative">
               <span className="text-xl sm:text-2xl font-bold text-amber-400">mabel wallin</span>
-            </Link>
+              {showCounter && clickCount > 0 && (
+                <span className="absolute -top-1 -right-6 text-xs text-gray-500 font-mono animate-fade-out">
+                  {clickCount}
+                </span>
+              )}
+            </a>
           </div>
 
           {/* Desktop Navigation */}

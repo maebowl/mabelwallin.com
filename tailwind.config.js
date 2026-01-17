@@ -61,6 +61,16 @@ export default {
           900: '#6b1a1a',
         },
       },
+      animation: {
+        'fade-out': 'fadeOut 1s ease-out forwards',
+      },
+      keyframes: {
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '70%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+      },
     },
   },
   plugins: [],
