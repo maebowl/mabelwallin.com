@@ -63,12 +63,18 @@ export default {
       },
       animation: {
         'fade-out': 'fadeOut 1s ease-out forwards',
+        'pop': 'pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
       },
       keyframes: {
         fadeOut: {
           '0%': { opacity: '1' },
           '70%': { opacity: '1' },
           '100%': { opacity: '0' },
+        },
+        pop: {
+          '0%': { transform: 'scale(0.5)', opacity: '0' },
+          '50%': { transform: 'scale(1.4)', opacity: '1' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
     },

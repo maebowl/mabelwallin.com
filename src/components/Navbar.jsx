@@ -56,7 +56,16 @@ export default function Navbar() {
             <a href="/portfolio" onClick={handleHomeClick} className="flex items-center relative">
               <span className="text-xl sm:text-2xl font-bold text-amber-400">mabel wallin</span>
               {showCounter && clickCount > 0 && (
-                <span className="absolute -top-1 -right-6 text-xs text-gray-500 font-mono animate-fade-out">
+                <span
+                  key={clickCount}
+                  className="absolute -top-2 -right-7 text-sm font-bold font-mono"
+                  style={{
+                    color: clickCount >= 7 ? '#ef4444' : clickCount >= 4 ? '#fbbf24' : '#9ca3af',
+                    textShadow: clickCount >= 7 ? '0 0 8px #ef4444' : 'none',
+                    display: 'inline-block',
+                    animation: 'counterPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                  }}
+                >
                   {clickCount}
                 </span>
               )}
