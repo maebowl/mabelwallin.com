@@ -124,6 +124,18 @@ const defaultData = {
           "artist": "Lena Raine",
           "url": "/uploads/1768606431631-SpotiDown.App_-_Resurrections_-_Lena_Raine.mp3",
           "id": 4
+      },
+      {
+          "title": "Tomorrow",
+          "artist": "Shakey Graves",
+          "url": "/uploads/1768608711422-SpotiDown.App_-_Tomorrow_-_Shakey_Graves.mp3",
+          "id": 5
+      },
+      {
+          "title": "Roll The Bones",
+          "artist": "Shakey Graves",
+          "url": "/uploads/1768608737881-SpotiDown.App_-_Roll_The_Bones_-_Audiotree_Live_Version_-_Shakey_Graves.mp3",
+          "id": 6
       }
   ],
   cassettes: [
@@ -150,7 +162,8 @@ const defaultData = {
           "color": "purple",
           "id": 3,
           "songIds": [
-              5
+              5,
+              6
           ]
       }
   ],
