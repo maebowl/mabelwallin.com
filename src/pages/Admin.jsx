@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSiteData } from '../data/siteData'
 import { saveToGitHub, uploadFileToGitHub } from '../services/github'
+import { extractAudioMetadata } from '../utils/audioMetadata'
 import './Admin.css'
 
 const ADMIN_PASSWORD = 'password'
@@ -385,7 +386,7 @@ function Admin() {
   )
 }
 
-function FileUpload({ onUpload, accept, label, githubToken, inputId }) {
+function FileUpload({ onUpload, onMetadata, accept, label, githubToken, inputId }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const fileInputRef = useRef(null)
@@ -405,6 +406,14 @@ function FileUpload({ onUpload, accept, label, githubToken, inputId }) {
     setError('')
 
     try {
+      // Extract metadata from audio files before uploading
+      if (onMetadata && file.type.startsWith('audio/')) {
+        const metadata = await extractAudioMetadata(file)
+        if (metadata.title || metadata.artist) {
+          onMetadata(metadata)
+        }
+      }
+
       const url = await uploadFileToGitHub(file, githubToken)
       onUpload(url)
     } catch (err) {
@@ -1008,7 +1017,12 @@ function CassettesManager({
                   label="Upload"
                   githubToken={githubToken}
                   inputId="file-library-add"
-                  onUpload={(url) => setNewLibrarySong({ ...newLibrarySong, url })}
+                  onUpload={(url) => setNewLibrarySong(prev => ({ ...prev, url }))}
+                  onMetadata={({ title, artist }) => setNewLibrarySong(prev => ({
+                    ...prev,
+                    title: prev.title || title || '',
+                    artist: prev.artist || artist || ''
+                  }))}
                 />
               </div>
               <button onClick={handleAddLibrarySong} disabled={saving}>
@@ -1046,6 +1060,11 @@ function CassettesManager({
                             githubToken={githubToken}
                             inputId={`file-library-edit-${song.id}`}
                             onUpload={(url) => setEditingLibrarySong(prev => ({ ...prev, url }))}
+                            onMetadata={({ title, artist }) => setEditingLibrarySong(prev => ({
+                              ...prev,
+                              title: title || prev.title,
+                              artist: artist || prev.artist
+                            }))}
                           />
                         </div>
                         <div className="item-actions">
@@ -1201,7 +1220,12 @@ function CassettesManager({
                 label="Upload"
                 githubToken={githubToken}
                 inputId={`file-cassette-${currentCassette.id}-add`}
-                onUpload={(url) => setNewSong({ ...newSong, url })}
+                onUpload={(url) => setNewSong(prev => ({ ...prev, url }))}
+                onMetadata={({ title, artist }) => setNewSong(prev => ({
+                  ...prev,
+                  title: prev.title || title || '',
+                  artist: prev.artist || artist || ''
+                }))}
               />
             </div>
             <button onClick={handleAddNewSong} disabled={saving}>
@@ -1271,6 +1295,11 @@ function CassettesManager({
                             return null
                           })
                         }}
+                        onMetadata={({ title, artist }) => setEditingSong(prev => ({
+                          ...prev,
+                          title: title || prev.title,
+                          artist: artist || prev.artist
+                        }))}
                       />
                     </div>
                     <div className="item-actions">
