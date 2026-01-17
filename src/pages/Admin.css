@@ -80,6 +80,46 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-save-all {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #404040;
+  color: #737373;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+}
+
+.btn-save-all.has-changes {
+  background: #fbbf24;
+  color: #1a1a1a;
+  border-color: #fbbf24;
+  cursor: pointer;
+  animation: pulse-save 2s ease-in-out infinite;
+}
+
+.btn-save-all.has-changes:hover {
+  background: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.btn-save-all:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@keyframes pulse-save {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+  }
 }
 
 .admin-tabs {
@@ -675,6 +715,55 @@
 }
 
 /* Song picker styles */
+/* Song Library Section */
+.song-library-section {
+  margin-bottom: 2rem;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.library-toggle {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #2d2d2d;
+  color: #fbbf24;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.library-toggle:hover {
+  background: #363636;
+}
+
+.song-library {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-top: 1px solid #404040;
+}
+
+.song-library .add-form {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #252525;
+  border-radius: 8px;
+}
+
+.song-library .add-form h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #a3a3a3;
+}
+
+.song-library .items-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
 .existing-songs-picker {
   margin: 1rem 0;
   border: 1px solid #404040;

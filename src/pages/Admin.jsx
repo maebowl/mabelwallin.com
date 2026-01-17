@@ -16,6 +16,7 @@ function Admin() {
   const [showTokenInput, setShowTokenInput] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveStatus, setSaveStatus] = useState('')
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   const {
     siteSettings, videos, designs, socials, badges, songs, cassettes,
@@ -41,6 +42,18 @@ function Admin() {
     }
   }, [])
 
+  // Warn user about unsaved changes when leaving
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [hasUnsavedChanges])
+
   const handleLogin = (e) => {
     e.preventDefault()
     if (password === ADMIN_PASSWORD) {
@@ -53,6 +66,9 @@ function Admin() {
   }
 
   const handleLogout = () => {
+    if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Are you sure you want to logout?')) {
+      return
+    }
     setIsAuthenticated(false)
     sessionStorage.removeItem(AUTH_KEY)
   }
@@ -64,176 +80,141 @@ function Admin() {
     setTimeout(() => setSaveStatus(''), 3000)
   }
 
-  // Auto-save to GitHub with updated data
-  const autoSave = async (updatedData) => {
+  // Save all changes to GitHub
+  const handleSaveAll = async () => {
     if (!githubToken) {
       setSaveStatus('Error: Set your GitHub token first!')
       setShowTokenInput(true)
       setTimeout(() => setSaveStatus(''), 3000)
-      return false
+      return
     }
 
     setSaving(true)
     setSaveStatus('Saving...')
 
     try {
-      await saveToGitHub(updatedData, githubToken)
+      await saveToGitHub({ siteSettings, videos, designs, socials, badges, songs, cassettes }, githubToken)
       setSaveStatus('Saved!')
+      setHasUnsavedChanges(false)
       setTimeout(() => setSaveStatus(''), 2000)
-      return true
     } catch (err) {
       setSaveStatus(`Error: ${err.message}`)
       setTimeout(() => setSaveStatus(''), 5000)
-      return false
     } finally {
       setSaving(false)
     }
   }
 
-  // Wrapped functions that save after updating
-  const handleAddVideo = async (video) => {
-    const id = Math.max(0, ...videos.map(v => v.id)) + 1
-    const newVideos = [...videos, { ...video, id }]
+  // Mark as having unsaved changes
+  const markChanged = () => {
+    setHasUnsavedChanges(true)
+  }
+
+  // Wrapped functions that mark changes (no auto-save)
+  const handleAddVideo = (video) => {
     addVideo(video)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleUpdateVideo = async (id, updates) => {
-    const newVideos = videos.map(v => v.id === id ? { ...v, ...updates } : v)
+  const handleUpdateVideo = (id, updates) => {
     updateVideo(id, updates)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleDeleteVideo = async (id) => {
-    const newVideos = videos.filter(v => v.id !== id)
+  const handleDeleteVideo = (id) => {
     deleteVideo(id)
-    await autoSave({ siteSettings, videos: newVideos, designs, socials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleAddDesign = async (design) => {
-    const id = Math.max(0, ...designs.map(d => d.id)) + 1
-    const newDesigns = [...designs, { ...design, id }]
+  const handleAddDesign = (design) => {
     addDesign(design)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleUpdateDesign = async (id, updates) => {
-    const newDesigns = designs.map(d => d.id === id ? { ...d, ...updates } : d)
+  const handleUpdateDesign = (id, updates) => {
     updateDesign(id, updates)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleDeleteDesign = async (id) => {
-    const newDesigns = designs.filter(d => d.id !== id)
+  const handleDeleteDesign = (id) => {
     deleteDesign(id)
-    await autoSave({ siteSettings, videos, designs: newDesigns, socials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleUpdateSocial = async (id, updates) => {
-    const newSocials = socials.map(s => s.id === id ? { ...s, ...updates } : s)
+  const handleUpdateSocial = (id, updates) => {
     updateSocial(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials: newSocials, badges, songs, cassettes })
+    markChanged()
   }
 
-  const handleAddBadge = async (badge) => {
-    const id = Math.max(0, ...badges.map(b => b.id)) + 1
-    const newBadges = [...badges, { ...badge, id }]
+  const handleAddBadge = (badge) => {
     addBadge(badge)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, songs, cassettes })
+    markChanged()
   }
 
-  const handleUpdateBadge = async (id, updates) => {
-    const newBadges = badges.map(b => b.id === id ? { ...b, ...updates } : b)
+  const handleUpdateBadge = (id, updates) => {
     updateBadge(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, songs, cassettes })
+    markChanged()
   }
 
-  const handleDeleteBadge = async (id) => {
-    const newBadges = badges.filter(b => b.id !== id)
+  const handleDeleteBadge = (id) => {
     deleteBadge(id)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, songs, cassettes })
+    markChanged()
   }
 
-  const handleReorderBadges = async (newBadges) => {
+  const handleReorderBadges = (newBadges) => {
     reorderBadges(newBadges)
-    await autoSave({ siteSettings, videos, designs, socials, badges: newBadges, songs, cassettes })
+    markChanged()
   }
 
-  const handleAddSong = async (song) => {
-    const id = Math.max(0, ...songs.map(s => s.id)) + 1
-    const newSongs = [...songs, { ...song, id }]
-    addSong(song)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs: newSongs, cassettes })
+  const handleAddSong = (song) => {
+    const id = addSong(song)
+    markChanged()
     return id
   }
 
-  const handleUpdateSong = async (id, updates) => {
-    const newSongs = songs.map(s => s.id === id ? { ...s, ...updates } : s)
+  const handleUpdateSong = (id, updates) => {
     updateSong(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs: newSongs, cassettes })
+    markChanged()
   }
 
-  const handleDeleteSong = async (id) => {
-    const newSongs = songs.filter(s => s.id !== id)
-    const newCassettes = cassettes.map(c => ({
-      ...c,
-      songIds: c.songIds.filter(sId => sId !== id)
-    }))
+  const handleDeleteSong = (id) => {
     deleteSong(id)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs: newSongs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleAddCassette = async (cassette) => {
-    const id = Math.max(0, ...cassettes.map(c => c.id)) + 1
-    const newCassettes = [...cassettes, { ...cassette, id, songIds: [] }]
+  const handleAddCassette = (cassette) => {
     addCassette(cassette)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleUpdateCassette = async (id, updates) => {
-    const newCassettes = cassettes.map(c => c.id === id ? { ...c, ...updates } : c)
+  const handleUpdateCassette = (id, updates) => {
     updateCassette(id, updates)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleDeleteCassette = async (id) => {
-    const newCassettes = cassettes.filter(c => c.id !== id)
+  const handleDeleteCassette = (id) => {
     deleteCassette(id)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleAddSongToCassette = async (cassetteId, songId) => {
-    const newCassettes = cassettes.map(c => {
-      if (c.id !== cassetteId) return c
-      if (c.songIds.includes(songId)) return c
-      return { ...c, songIds: [...c.songIds, songId] }
-    })
+  const handleAddSongToCassette = (cassetteId, songId) => {
     addSongToCassette(cassetteId, songId)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleRemoveSongFromCassette = async (cassetteId, songId) => {
-    const newCassettes = cassettes.map(c => {
-      if (c.id !== cassetteId) return c
-      return { ...c, songIds: c.songIds.filter(id => id !== songId) }
-    })
+  const handleRemoveSongFromCassette = (cassetteId, songId) => {
     removeSongFromCassette(cassetteId, songId)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleReorderSongsInCassette = async (cassetteId, newSongIds) => {
-    const newCassettes = cassettes.map(c => c.id === cassetteId ? { ...c, songIds: newSongIds } : c)
+  const handleReorderSongsInCassette = (cassetteId, newSongIds) => {
     reorderSongsInCassette(cassetteId, newSongIds)
-    await autoSave({ siteSettings, videos, designs, socials, badges, songs, cassettes: newCassettes })
+    markChanged()
   }
 
-  const handleUpdateSiteSettings = async (section, updates) => {
-    const newSettings = {
-      ...siteSettings,
-      [section]: { ...siteSettings[section], ...updates }
-    }
+  const handleUpdateSiteSettings = (section, updates) => {
     updateSiteSettings(section, updates)
-    await autoSave({ siteSettings: newSettings, videos, designs, socials, badges, songs, cassettes })
+    markChanged()
   }
 
   if (!isAuthenticated) {
@@ -268,6 +249,13 @@ function Admin() {
                 {saveStatus}
               </span>
             )}
+            <button
+              onClick={handleSaveAll}
+              className={`btn-save-all ${hasUnsavedChanges ? 'has-changes' : ''}`}
+              disabled={saving || !hasUnsavedChanges}
+            >
+              {saving ? 'Saving...' : hasUnsavedChanges ? 'Save All Changes' : 'All Saved'}
+            </button>
             <button onClick={() => setShowTokenInput(!showTokenInput)} className="btn-secondary">
               {githubToken ? 'Change Token' : 'Set Token'}
             </button>
@@ -908,9 +896,12 @@ function CassettesManager({
   const [selectedCassette, setSelectedCassette] = useState(null)
   const [editingCassette, setEditingCassette] = useState(null)
   const [editingSong, setEditingSong] = useState(null)
+  const [editingLibrarySong, setEditingLibrarySong] = useState(null)
   const [newCassette, setNewCassette] = useState({ name: '', color: 'amber' })
   const [newSong, setNewSong] = useState({ title: '', artist: '', url: '' })
+  const [newLibrarySong, setNewLibrarySong] = useState({ title: '', artist: '', url: '' })
   const [showSongPicker, setShowSongPicker] = useState(false)
+  const [showLibrary, setShowLibrary] = useState(false)
 
   // Helper to get song objects for a cassette
   const getSongsForCassette = (cassette) => {
@@ -946,9 +937,20 @@ function CassettesManager({
     setNewSong({ title: '', artist: '', url: '' })
   }
 
+  const handleAddLibrarySong = async () => {
+    if (!newLibrarySong.title || !newLibrarySong.url) return
+    await addSong(newLibrarySong)
+    setNewLibrarySong({ title: '', artist: '', url: '' })
+  }
+
   const handleUpdateSong = (songId) => {
     updateSong(songId, editingSong)
     setEditingSong(null)
+  }
+
+  const handleUpdateLibrarySong = (songId) => {
+    updateSong(songId, editingLibrarySong)
+    setEditingLibrarySong(null)
   }
 
   const moveSong = (index, direction) => {
@@ -969,8 +971,116 @@ function CassettesManager({
 
   return (
     <div className="manager">
-      <h2>Cassettes</h2>
-      <p className="manager-note">Create mixtapes. Songs can be shared across multiple cassettes!</p>
+      <h2>Cassettes & Songs</h2>
+      <p className="manager-note">Manage your song library and create mixtapes. Songs can be shared across multiple cassettes!</p>
+
+      {/* Song Library Section */}
+      <div className="song-library-section">
+        <button
+          className="library-toggle"
+          onClick={() => setShowLibrary(!showLibrary)}
+        >
+          {showLibrary ? '▼' : '▶'} Song Library ({songs.length} songs)
+        </button>
+
+        {showLibrary && (
+          <div className="song-library">
+            <div className="add-form">
+              <h4>Add Song to Library</h4>
+              <input
+                placeholder="Song title"
+                value={newLibrarySong.title}
+                onChange={(e) => setNewLibrarySong({ ...newLibrarySong, title: e.target.value })}
+              />
+              <input
+                placeholder="Artist"
+                value={newLibrarySong.artist}
+                onChange={(e) => setNewLibrarySong({ ...newLibrarySong, artist: e.target.value })}
+              />
+              <div className="media-input-group">
+                <input
+                  placeholder="Audio URL (MP3, etc.)"
+                  value={newLibrarySong.url}
+                  onChange={(e) => setNewLibrarySong({ ...newLibrarySong, url: e.target.value })}
+                />
+                <FileUpload
+                  accept="audio/*"
+                  label="Upload"
+                  githubToken={githubToken}
+                  inputId="file-library-add"
+                  onUpload={(url) => setNewLibrarySong({ ...newLibrarySong, url })}
+                />
+              </div>
+              <button onClick={handleAddLibrarySong} disabled={saving}>
+                {saving ? 'Saving...' : 'Add to Library'}
+              </button>
+            </div>
+
+            <div className="items-list">
+              {songs.length === 0 ? (
+                <p className="empty-note">No songs yet. Add some above!</p>
+              ) : (
+                songs.map(song => (
+                  <div key={song.id} className="item">
+                    {editingLibrarySong?.id === song.id ? (
+                      <>
+                        <input
+                          value={editingLibrarySong.title}
+                          onChange={(e) => setEditingLibrarySong(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="Song title"
+                        />
+                        <input
+                          value={editingLibrarySong.artist || ''}
+                          onChange={(e) => setEditingLibrarySong(prev => ({ ...prev, artist: e.target.value }))}
+                          placeholder="Artist"
+                        />
+                        <div className="media-input-group">
+                          <input
+                            value={editingLibrarySong.url}
+                            onChange={(e) => setEditingLibrarySong(prev => ({ ...prev, url: e.target.value }))}
+                            placeholder="Audio URL"
+                          />
+                          <FileUpload
+                            accept="audio/*"
+                            label="Upload"
+                            githubToken={githubToken}
+                            inputId={`file-library-edit-${song.id}`}
+                            onUpload={(url) => setEditingLibrarySong(prev => ({ ...prev, url }))}
+                          />
+                        </div>
+                        <div className="item-actions">
+                          <button onClick={() => handleUpdateLibrarySong(song.id)} disabled={saving}>
+                            {saving ? 'Saving...' : 'Save'}
+                          </button>
+                          <button onClick={() => setEditingLibrarySong(null)}>Cancel</button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="item-info">
+                          <strong>{song.title}</strong>
+                          <span className="item-meta">{song.artist || 'Unknown artist'}</span>
+                        </div>
+                        <div className="item-actions">
+                          <button onClick={() => setEditingLibrarySong({ ...song })}>Edit</button>
+                          <button
+                            onClick={() => deleteSong(song.id)}
+                            className="btn-danger"
+                            disabled={saving}
+                            title="Delete song from library"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="add-form">
         <h3>Create New Cassette</h3>
