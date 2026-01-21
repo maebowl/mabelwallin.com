@@ -52,7 +52,15 @@ const defaultData = {
           "isVertical": true
       }
   ],
-  designs: [],
+  designs: [
+      {
+          "title": "Animal Hybrid I",
+          "category": "Photoshop",
+          "description": "",
+          "image": "/uploads/1769033200143-parrot-panda-butterfly.png",
+          "id": 1
+      }
+  ],
   socials: [
       {
           "id": "email",
