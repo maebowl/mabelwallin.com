@@ -90,12 +90,6 @@ const defaultData = {
           "updatedAt": 1768591611555
       },
       {
-          "image": "/uploads/1768557537415-IMG_1921.png",
-          "url": "https://www.diyhrt.wiki",
-          "alt": "just in case",
-          "id": 2
-      },
-      {
           "image": "/uploads/1768557812569-IMG_1919.gif",
           "url": "https://www.youtube.com/c/scottthewoz",
           "alt": "hey all",
