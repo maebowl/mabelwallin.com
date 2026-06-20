@@ -45,7 +45,7 @@ export default function Contact() {
   return (
     <div className="space-y-8 px-4">
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display">
           {contactSettings.title || 'contact'}
         </h1>
         <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
@@ -57,7 +57,7 @@ export default function Contact() {
         <div className="bg-slate-dark rounded-lg p-6 sm:p-8 border border-amber-400/30">
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold text-amber-400 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-amber-400 mb-4 font-display">
                 get in touch
               </h3>
               <div className="space-y-4">
@@ -86,7 +86,7 @@ export default function Contact() {
 
             {badges && badges.length > 0 && (
               <div className="pt-6 border-t border-charcoal-300">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3">badges</h3>
+                <h3 className="text-sm font-semibold text-gray-400 mb-3 font-display">badges</h3>
                 <div className="flex flex-wrap gap-2">
                   {badges.map((badge) => (
                     <a

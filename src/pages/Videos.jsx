@@ -12,7 +12,7 @@ export default function Videos() {
   return (
     <div className="space-y-8 px-4">
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{siteSettings.videos.title}</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display">{siteSettings.videos.title}</h1>
         <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
           {siteSettings.videos.intro}
         </p>
@@ -55,7 +55,7 @@ export default function Videos() {
               </div>
             </div>
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-white mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2 font-display">
                 {video.title}
               </h3>
               <p className="text-gray-300">{video.description}</p>
@@ -77,7 +77,7 @@ export default function Videos() {
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-1">
+                  <h2 className="text-2xl font-bold text-white mb-1 font-display">
                     {selectedVideo.title}
                   </h2>
                   <p className="text-gray-300">{selectedVideo.description}</p>

@@ -54,7 +54,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <a href="/portfolio" onClick={handleHomeClick} className="flex items-center relative">
-              <span className="text-xl sm:text-2xl font-bold text-amber-400">mabel wallin</span>
+              <span className="text-xl sm:text-2xl font-bold text-amber-400 font-display">mabel wallin</span>
               {showCounter && clickCount > 0 && (
                 <span
                   key={clickCount}

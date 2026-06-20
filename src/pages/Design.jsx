@@ -8,7 +8,7 @@ export default function Design() {
   return (
     <div className="space-y-8 px-4">
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{siteSettings.designs.title}</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display">{siteSettings.designs.title}</h1>
         <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
           {siteSettings.designs.intro}
         </p>
@@ -29,7 +29,7 @@ export default function Design() {
               />
             </div>
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-white mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2 font-display">
                 {design.title}
               </h3>
               {design.category && (
@@ -56,7 +56,7 @@ export default function Design() {
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-1">
+                  <h2 className="text-2xl font-bold text-white mb-1 font-display">
                     {selectedDesign.title}
                   </h2>
                   {selectedDesign.category && (

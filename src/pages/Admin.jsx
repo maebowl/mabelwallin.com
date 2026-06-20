@@ -222,7 +222,7 @@ function Admin() {
     return (
       <div className="admin-page">
         <div className="admin-login">
-          <h1>admin</h1>
+          <h1 className="font-display">admin</h1>
           <form onSubmit={handleLogin}>
             <input
               type="password"
@@ -243,7 +243,7 @@ function Admin() {
     <div className="admin-page">
       <div className="admin-container">
         <div className="admin-header">
-          <h1>admin</h1>
+          <h1 className="font-display">admin</h1>
           <div className="admin-actions">
             {saveStatus && (
               <span className={`save-status-inline ${saveStatus.includes('Error') ? 'error' : 'success'}`}>

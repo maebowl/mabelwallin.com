@@ -9,7 +9,7 @@ export default function Home() {
     <div className="space-y-12 px-4">
       {/* Hero Section */}
       <section className="text-center py-12 sm:py-16 md:py-20">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 font-display">
           {hero.greeting || "hi, i'm"} {hero.name || 'mabel'}
         </h1>
         <p className="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl mx-auto px-4">
